@@ -31,7 +31,7 @@ function getAccount(apiKey, apiSecret, data = {}) {
   
   data.timestamp = new Date().getTime() + timeOffset;
   if (typeof data.recvWindow === "undefined") data.recvWindow = recvWindow;
-  
+
   data.symbol = 'TRXBTC';
   data.side = 'sell';
   data.type = 'MARKET';

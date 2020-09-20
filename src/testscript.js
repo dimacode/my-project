@@ -40,9 +40,9 @@ function getAccount(apiKey, apiSecret, data = {}) {
 }
 
 const access_key =
-  "3FWycCmnJzwbIoLrJwQtUuUBi4MjyQrUr021a0GnwaRvLvlxhFKyKulfCWzH3ci3";
+  "";
 const secret_key =
-  "aiaSKJc3F4yzXeUT1PYk2VcHSL3Qdo6IisNIjBIDda8YkutAmnTtTVwYPwJEBFCj";
+  "";
 
 getAccount(access_key, secret_key, {}).then(account=>{
     console.log("account", account)

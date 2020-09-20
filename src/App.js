@@ -3,6 +3,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 
 import testscript from './testscript';
+import { access_key, secret_key } from './keys';
 
 
 import logo from './logo.svg';
@@ -11,9 +12,9 @@ import './App.css';
 class App extends React.Component {
 
   componentDidMount() {
-    // const user = {
-    //   symbol: "TRXBTC"
-    // };
+
+    // GET PRICE
+
     // setInterval(() => {
     //   axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`)
     //   .then(res => {
@@ -21,45 +22,73 @@ class App extends React.Component {
     //     console.log(res.data);
     //   })
     // }, 2000)
-    let timeOffset = 0;
 
-    const param = {
-      baseUrl: "https://api.binance.com/",
-      getAccountData: "api/v3/account",
-      recvWindow: 5000,
-      timestamp: new Date().getTime() + timeOffset,
-    };
-    const $param = `recvWindow=${param.recvWindow}&timestamp=${param.timestamp}`;
+    //==========================================================================
 
-    // const recvWindow = 'recvWindow=5000';
-    // const query_string = `timestamp=${Date.now()}&${recvWindow}`;
-    const apiSecret = '';
+    // GET ACCOUNT INFO (balances)
 
-    const signature = crypto
-      .createHmac('sha256', apiSecret)
-      .update($param)
-      .digest('hex');
+    // let timeOffset = 0;
+    // const param = {
+    //   baseUrl: "https://api.binance.com/",
+    //   getAccountData: "api/v3/account",
+    //   recvWindow: 5000,
+    //   timestamp: new Date().getTime() + timeOffset,
+    // };
+    // const $param = `recvWindow=${param.recvWindow}&timestamp=${param.timestamp}`;
+    // const apiSecret = '';
+    // const signature = crypto
+    //   .createHmac('sha256', apiSecret)
+    //   .update($param)
+    //   .digest('hex');
 
-    // console.log("hashing the string: ");
-    // console.log(query_string);
-    // console.log("and return:");
-    // console.log(signature(query_string));
+    // const url = param.baseUrl + param.getAccountData +'?'+ $param +'&'+ 'signature=' + signature;
+    // axios.get(url, {
+    //   headers: {
+    //     'X-MBX-APIKEY': ''
+    //     // 'X-MBX-APIKEY': {
+    //     //   apiKey: '',
+    //     //   secretKey: '',
+    //     // }
+    //   }
+    // })
+    // .then((res) => console.log('res', res))
 
-    // console.log("\n");
+    //================================================================================
 
-    const url = param.baseUrl + param.getAccountData +'?'+ $param +'&'+ 'signature=' + signature;
-    axios.get(url, {
-      headers: {
-        'X-MBX-APIKEY': ''
-        // 'X-MBX-APIKEY': {
-        //   apiKey: '',
-        //   secretKey: '',
-        // }
-      }
-    })
-    .then((res) => console.log('res', res))
+    // const apiSecret = secret_key;
+    // let timeOffset = 0;
+    // const param = {
+    //   baseUrl: "https://api.binance.com/",
+    //   getAccountData: "api/v3/order/test",
+    //   recvWindow: 5000,
+    //   timestamp: new Date().getTime() + timeOffset,
 
+    //   symbol: 'TRXBTC',
+    //   side: 'sell',
+    //   type: 'MARKET',
+    //   quantity: 2000,
+    // };
+
+    // const $timeAndRec = `timestamp=${param.timestamp}&recvWindow=${param.recvWindow}`;
+    // const $orderOptions = `symbol=${param.symbol}&side=${param.side}&type=${param.type}&quantity=${param.quantity}`;
     
+    // const signature = crypto
+    //   .createHmac('sha256', apiSecret)
+    //   .update($timeAndRec)
+    //   .digest('hex');
+
+    // const url = param.baseUrl + param.getAccountData +'?'+ $timeAndRec +'&'+ $orderOptions +'&'+ 'signature=' + signature;
+    // axios.post(url, '',
+    // {
+    //   headers: {
+    //     'X-MBX-APIKEY': access_key,
+    //     // 'X-MBX-APIKEY': {
+    //     //   apiKey: '',
+    //     //   secretKey: '',
+    //     // }
+    //   }
+    // })
+    // .then((res) => console.log('res', res))
     
   }
 

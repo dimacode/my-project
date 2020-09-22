@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import crypto from 'crypto';
 
-import testscript from './testscript';
+import logic from './logic';
 import { access_key, secret_key } from './keys';
 
 

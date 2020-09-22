@@ -20,10 +20,10 @@ const buildQuery = data => {
       return a;
     }, [])
     .join("&");
-}
+};
 
 // GET ACCOUNT
-const getAccountData = (apiKey, apiSecret, data = {}) => {
+export const getAccountData = (apiKey, apiSecret, data = {}, pair) => {
   if (!apiKey || !apiSecret) {
     throw new Error(
       "You need to pass an API key and secret to make authenticated calls."
@@ -46,19 +46,20 @@ const getAccountData = (apiKey, apiSecret, data = {}) => {
       },
     })
     .then(x=>x.data)
+    .then(data => data.balances.filter(e => e.asset === pair[0] || e.asset === pair[1]))
     .catch((err) => console.log("error:", err));
-}
+};
 
 // getAccountData(access_key, secret_key, {}).then(account=>{
 //     console.log("account", account)
 // })
 
 // GET LATEST PRICE
-const getLatestPrice = (pair = 'TRXBTC') => axios.get(`${baseUrl}${latestPrice}?symbol=${pair}`)
+export const getLatestPrice = (pair = 'TRXBTC') => axios.get(`${baseUrl}${latestPrice}?symbol=${pair}`)
   .then(res => res.data)
 
 // SEND ORDER
-const sendOrder = (apiKey, apiSecret, data) => {
+export const sendOrder = (apiKey, apiSecret, data) => {
 
   if (!apiKey || !apiSecret) {
     throw new Error(
@@ -88,7 +89,7 @@ const sendOrder = (apiKey, apiSecret, data) => {
     })
     .then(x=>x.data)
     .catch((err) => console.log("error:", err));
-}
+};
 
 // sendOrder(access_key, secret_key, {
 //   symbol: 'TRXBTC',

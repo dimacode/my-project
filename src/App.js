@@ -3,7 +3,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 
 import logic from './logic';
-import { access_key, secret_key } from './keys';
+// import { access_key, secret_key } from './keys';
 
 
 import logo from './logo.svg';

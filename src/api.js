@@ -58,6 +58,9 @@ export const getAccountData = (apiKey, apiSecret, data = {}, pair) => {
 export const getLatestPrice = (pair = 'TRXBTC') => axios.get(`${baseUrl}${latestPrice}?symbol=${pair}`)
   .then(res => res.data)
 
+// export const getLatestPrice = () => axios.get('http://localhost:4000/123')
+//   .then(res => res.data)
+
 // SEND ORDER
 export const sendOrder = (apiKey, apiSecret, data) => {
 

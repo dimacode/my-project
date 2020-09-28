@@ -8,7 +8,7 @@ const baseUrl = "https://api.binance.com/";
 // ORDERS and ACCOUNT
 const accountData = "api/v3/account";
 const latestPrice = "api/v3/ticker/price";
-const order = "api/v3/order/test";
+const order = "api/v3/order";
 
 let timeOffset = 0;
 const recvWindow = 5000;
@@ -23,7 +23,7 @@ const buildQuery = data => {
 };
 
 // GET ACCOUNT
-export const getAccountData = (apiKey, apiSecret, data = {}, pair) => {
+export const getAccountData = (apiKey, apiSecret, data = {}) => {
   if (!apiKey || !apiSecret) {
     throw new Error(
       "You need to pass an API key and secret to make authenticated calls."
@@ -46,7 +46,7 @@ export const getAccountData = (apiKey, apiSecret, data = {}, pair) => {
       },
     })
     .then(x=>x.data)
-    .then(data => data.balances.filter(e => e.asset === pair[0] || e.asset === pair[1]))
+    .then(data => data.balances)
     .catch((err) => console.log("error:", err));
 };
 
@@ -55,8 +55,14 @@ export const getAccountData = (apiKey, apiSecret, data = {}, pair) => {
 // })
 
 // GET LATEST PRICE
-export const getLatestPrice = (pair = 'TRXBTC') => axios.get(`${baseUrl}${latestPrice}?symbol=${pair}`)
+export const getLatestPrice = (pairs = []) => {
+  return axios.get(`${baseUrl}${latestPrice}`)
   .then(res => res.data)
+  .then(prices => {
+    // console.log('pairs', pairs, prices)
+    return prices.filter(price => pairs.includes(price.symbol))
+  })
+}
 
 // export const getLatestPrice = () => axios.get('http://localhost:4000/123')
 //   .then(res => res.data)
@@ -91,7 +97,7 @@ export const sendOrder = (apiKey, apiSecret, data) => {
       },
     })
     .then(x=>x.data)
-    .catch((err) => console.log("error:", err));
+    .catch((err) => {console.log("error:", err); return err});
 };
 
 // sendOrder(access_key, secret_key, {

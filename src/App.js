@@ -1,99 +1,49 @@
 import React from 'react';
-import axios from 'axios';
-import crypto from 'crypto';
+// import axios from 'axios';
+// import crypto from 'crypto';
 
-import logic from './logic';
-// import { access_key, secret_key } from './keys';
-
+import { loadBalances, startScript, getData, } from './logic';
 
 import logo from './logo.svg';
 import './App.css';
 
 class App extends React.Component {
 
+  state = {
+    balance: {},
+    pairs: [],
+  };
+
   componentDidMount() {
+    loadBalances().then(() => {
+      startScript();
+    });
 
-    // GET PRICE
-
-    // setInterval(() => {
-    //   axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`)
-    //   .then(res => {
-    //     console.log(res);
-    //     console.log(res.data);
-    //   })
-    // }, 2000)
-
-    //==========================================================================
-
-    // GET ACCOUNT INFO (balances)
-
-    // let timeOffset = 0;
-    // const param = {
-    //   baseUrl: "https://api.binance.com/",
-    //   getAccountData: "api/v3/account",
-    //   recvWindow: 5000,
-    //   timestamp: new Date().getTime() + timeOffset,
-    // };
-    // const $param = `recvWindow=${param.recvWindow}&timestamp=${param.timestamp}`;
-    // const apiSecret = '';
-    // const signature = crypto
-    //   .createHmac('sha256', apiSecret)
-    //   .update($param)
-    //   .digest('hex');
-
-    // const url = param.baseUrl + param.getAccountData +'?'+ $param +'&'+ 'signature=' + signature;
-    // axios.get(url, {
-    //   headers: {
-    //     'X-MBX-APIKEY': ''
-    //     // 'X-MBX-APIKEY': {
-    //     //   apiKey: '',
-    //     //   secretKey: '',
-    //     // }
-    //   }
-    // })
-    // .then((res) => console.log('res', res))
-
-    //================================================================================
-
-    // const apiSecret = secret_key;
-    // let timeOffset = 0;
-    // const param = {
-    //   baseUrl: "https://api.binance.com/",
-    //   getAccountData: "api/v3/order/test",
-    //   recvWindow: 5000,
-    //   timestamp: new Date().getTime() + timeOffset,
-
-    //   symbol: 'TRXBTC',
-    //   side: 'sell',
-    //   type: 'MARKET',
-    //   quantity: 2000,
-    // };
-
-    // const $timeAndRec = `timestamp=${param.timestamp}&recvWindow=${param.recvWindow}`;
-    // const $orderOptions = `symbol=${param.symbol}&side=${param.side}&type=${param.type}&quantity=${param.quantity}`;
-    
-    // const signature = crypto
-    //   .createHmac('sha256', apiSecret)
-    //   .update($timeAndRec)
-    //   .digest('hex');
-
-    // const url = param.baseUrl + param.getAccountData +'?'+ $timeAndRec +'&'+ $orderOptions +'&'+ 'signature=' + signature;
-    // axios.post(url, '',
-    // {
-    //   headers: {
-    //     'X-MBX-APIKEY': access_key,
-    //     // 'X-MBX-APIKEY': {
-    //     //   apiKey: '',
-    //     //   secretKey: '',
-    //     // }
-    //   }
-    // })
-    // .then((res) => console.log('res', res))
+    setInterval(() => {
+      this.setState(() => {
+        // console.log('PING_STATE')
+        return {
+          balance: getData().currency,
+          pairs: getData().pairs,
+        }
+      })
+    }, 5000)
     
   }
 
   render() { 
+    // JST: 3151.23156197
+    // USDT: 119.93938662
+
+    // console.log('STATE:', this.state)
     return <div className="App">
+      <div>
+        <h1>БЫЛО</h1>
+        <br />
+        <b>JST: {this.state && this.state.balance && this.state.balance.JST && this.state.balance.JST.balance}</b>
+        <br />
+        <b>USDT: {this.state && this.state.balance && this.state.balance.USDT && this.state.balance.USDT.balance}</b>
+      </div>
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
       <p>

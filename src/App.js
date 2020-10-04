@@ -2,7 +2,7 @@ import React from 'react';
 // import axios from 'axios';
 // import crypto from 'crypto';
 
-import { loadBalances, startScript, getData, } from './logic';
+import { loadBalances, startScript, getData, } from './logic2';
 
 import logo from './logo.svg';
 import './App.css';
@@ -19,15 +19,15 @@ class App extends React.Component {
       startScript();
     });
 
-    setInterval(() => {
-      this.setState(() => {
-        // console.log('PING_STATE')
-        return {
-          balance: getData().currency,
-          pairs: getData().pairs,
-        }
-      })
-    }, 5000)
+    // setInterval(() => {
+    //   this.setState(() => {
+    //     // console.log('PING_STATE')
+    //     return {
+    //       balance: getData().currency,
+    //       pairs: getData().pairs,
+    //     }
+    //   })
+    // }, 5000)
     
   }
 

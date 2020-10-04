@@ -8,7 +8,7 @@ const baseUrl = "https://api.binance.com/";
 // ORDERS and ACCOUNT
 const accountData = "api/v3/account";
 const latestPrice = "api/v3/ticker/price";
-const order = "api/v3/order";
+const order = "api/v3/order/test";
 
 let timeOffset = 0;
 const recvWindow = 5000;

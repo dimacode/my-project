@@ -50,15 +50,13 @@ let pairs = {
 };
 
 let history = [];
-// let currentPrice = 0;
-// let basePersent = 1;
-// let orderSide = 'sell';
-// let whatCryptoSell = '';
+let variableHistory = {};
 
 export const startScript = () => {
-  setInterval(() => {
+  loadBalances().then(() => {
+    console.log('START SCRIPT')
     getPrice();
-  }, 5000);
+  });
 }
 
 export const loadBalances = () => 
@@ -85,7 +83,7 @@ export const loadBalances = () =>
     currency = {...newCurrency};
     // console.log('TRUE BALANCE FINISH', currency)
     // console.log('base', base);
-  })
+  });
   // console.log(22222)
   // if (!onlyBalance) {
   //   console.log(11111)
@@ -159,6 +157,7 @@ const checkPrice = (lastPrices) => {
       // console.log('minPricePositiv', minPricePositiv)
 
       preparingOrder(currentPair, 'sell', newPrice, minPricePositiv);
+      return false;
       break;
     }
     if (newPrice < minPriceNegativ) {
@@ -174,11 +173,15 @@ const checkPrice = (lastPrices) => {
       // console.log('minPricePositiv', minPriceNegativ)
 
       preparingOrder(currentPair, 'buy', newPrice, minPriceNegativ);
+      return false;
       break;
     }
-    
     i++;
   };
+  setTimeout(() => {
+    // console.log(1111111111111111111111111111111111111)
+    getPrice();
+  }, 5000)
   // console.log('--------------------------------------------------------')
 };
 
@@ -201,14 +204,6 @@ const preparingOrder = (currentPair, side, newPrice, minPrice) => {
   const quantityWithCommision = balance - (balance / commision);
   const quantityWithPrecision = quantityWithCommision.toFixed(precision);
 
-  // console.log('FIRST==========================')
-  // console.log('currentPair', currentPair)
-  // console.log("side", side);
-  // console.log("precision", precision);
-  // console.log("balance", balance);
-  // console.log("quantityWithCommision", quantityWithCommision);
-  // console.log("quantityWithPrecision", quantityWithPrecision);
-  // console.log('newPrice', newPrice)
   console.log('============== 1 ОРДЕР ===============')
   console.log('CURRENCY', currency);
   console.log('Сторона', side === 'sell' ? 'sell' : 'buy');
@@ -223,6 +218,21 @@ const preparingOrder = (currentPair, side, newPrice, minPrice) => {
   console.log('Баланс после вычислений', balance);
   console.log('Баланс с комисией', quantityWithCommision)
   console.log('Сумма сделки обрезанна', quantityWithPrecision);
+
+  variableHistory = {
+    firstOrder: '1 ОРДЕР',
+    // currency: currency,
+    side: side === 'sell' ? 'sell' : 'buy',
+    symbol: side === 'sell' ? currentPair.base : currentPair.qoute,
+    lastPrice: currentPair.lastPrice,
+    newPrice: newPrice,
+    minPrice: minPrice,
+    wasBalance1: currency[currentPair.base].balance,
+    wasBalance2: currency[currentPair.qoute].balance,
+    balanceAfterCalc: balance,
+    balanceWithComision: quantityWithCommision,
+    balanceWithPrecis: quantityWithPrecision
+  };
   
 
   
@@ -274,6 +284,17 @@ const preparingOrder = (currentPair, side, newPrice, minPrice) => {
         console.log('Баланс с комисией', quantityWithCommision)
         console.log('Сумма сделки обрезанна', quantityWithPrecision);
 
+        variableHistory.divider = '=====================================';
+        variableHistory.secondOrder = '2 ОРДЕР';
+        variableHistory.side2 = side === 'sell' ? 'buy' : 'sell';
+        variableHistory.symbol2 = side === 'sell' ? currentPair.qoute : currentPair.base;
+        variableHistory.balanceNew1 = currency[whatCrypto1].balance;
+        variableHistory.balanceNew2 = currency[whatCrypto2].balance;
+        variableHistory.sepa = 'Делим баланс на 2';
+        variableHistory.balanceAfterCalc2 = balance;
+        variableHistory.balanceWithComision = quantityWithCommision;
+        variableHistory.balanceWithPrecis = quantityWithPrecision;
+
         sendOrder(access_key, secret_key, {
           symbol: pair, // TRXBTC
           side: side === 'sell' ? 'buy' : 'sell', // sell
@@ -286,6 +307,17 @@ const preparingOrder = (currentPair, side, newPrice, minPrice) => {
             console.log('Финиш баланс 1', currency[whatCrypto1].balance);
             console.log('Финиш баланс 2', currency[whatCrypto2].balance);
             console.log('-------------------------------- ФИНИШ ---------------------------', result);
+
+            variableHistory.refreshBalance = 'Обновляем балансы';
+            variableHistory.finish1 = currency[whatCrypto1].balance;
+            variableHistory.finish2 = currency[whatCrypto2].balance;
+            history.push(variableHistory);
+            variableHistory = {};
+
+            setTimeout(() => {
+              // console.log(222222222222222222222222222222222222)
+              getPrice();
+            }, 5000)
           });
         })
 
@@ -297,8 +329,9 @@ const preparingOrder = (currentPair, side, newPrice, minPrice) => {
 
 export const getData = () => {
   return {
-    currency: currency,
-    pairs: pairs,
+    currency: {...currency},
+    pairs: {...pairs},
+    history: [...history],
   }
 }
 

@@ -11,13 +11,12 @@ class App extends React.Component {
 
   state = {
     balance: {},
-    pairs: [],
+    pairs: {},
+    history: [],
   };
 
   componentDidMount() {
-    loadBalances().then(() => {
-      startScript();
-    });
+    startScript();
 
     setInterval(() => {
       this.setState(() => {
@@ -25,40 +24,41 @@ class App extends React.Component {
         return {
           balance: getData().currency,
           pairs: getData().pairs,
+          history: getData().history,
         }
       })
-    }, 5000)
+    }, 10000);
     
   }
 
+  allHistory = (history) => history.length && history.map(h => {
+    return (
+      <div key={h.wasBalance1} style={{margin: '50px 0px'}}>
+        {this.oneHistory(h)}
+      </div>
+    )
+  });
+
+  oneHistory = (h) => {
+    let omg = Object.keys(h);
+    return omg.map(h2 => 
+      <div key={new Date().getTime()+h2}>
+        <span>{h2}</span> : <span>{h[h2]}</span>
+    </div>)
+  }
+
   render() { 
+    const { balance, pairs, history } = this.state;
+    // console.log('history', history)
     // JST: 3151.23156197
     // USDT: 119.93938662
 
     // console.log('STATE:', this.state)
-    return <div className="App">
-      <div>
-        <h1>БЫЛО</h1>
-        <br />
-        <b>JST: {this.state && this.state.balance && this.state.balance.JST && this.state.balance.JST.balance}</b>
-        <br />
-        <b>USDT: {this.state && this.state.balance && this.state.balance.USDT && this.state.balance.USDT.balance}</b>
+    return (
+      <div className="App">
+        {this.allHistory(history)}
       </div>
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.js</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
-    </header>
-  </div>
+    )
   }
 }
 

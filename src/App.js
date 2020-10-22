@@ -2,7 +2,7 @@ import React from 'react';
 // import axios from 'axios';
 // import crypto from 'crypto';
 
-import { loadBalances, startScript, getData, } from './logic';
+import { startScript, getData, } from './logic3';
 
 import logo from './logo.svg';
 import './App.css';
@@ -16,7 +16,10 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    startScript();
+    // (() => {
+      startScript();
+    // }, 5000)
+    
 
     setInterval(() => {
       this.setState(() => {
@@ -41,22 +44,29 @@ class App extends React.Component {
 
   oneHistory = (h) => {
     let omg = Object.keys(h);
-    return omg.map(h2 => 
-      <div key={new Date().getTime()+h2}>
+    return omg.map(h2 => {
+      if (typeof(h[h2]) === 'object') {
+        let a = h[h2].join(' / ');
+        return <div key={new Date().getTime()+a}>
+          <span>{h2}</span> : <span>{a}</span>
+        </div>
+      }
+      return <div key={new Date().getTime()+h2}>
         <span>{h2}</span> : <span>{h[h2]}</span>
-    </div>)
+      </div>
+    })
   }
 
   render() { 
     const { balance, pairs, history } = this.state;
-    // console.log('history', history)
+    console.log('history', balance, pairs, history)
     // JST: 3151.23156197
     // USDT: 119.93938662
 
     // console.log('STATE:', this.state)
     return (
       <div className="App">
-        {this.allHistory(history)}
+        {/* {this.allHistory(history)} */}
       </div>
     )
   }

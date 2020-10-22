@@ -5,10 +5,13 @@ const crypto = require("crypto");
 // BASE ENDPOINT
 const baseUrl = "https://api.binance.com/";
 
+// SERVER TIME
+const GMT = 10800000; // +3 hours
+
 // ORDERS and ACCOUNT
 const accountData = "api/v3/account";
 const latestPrice = "api/v3/ticker/price";
-const order = "api/v3/order";
+const order = "api/v3/order/test";
 
 let timeOffset = 0;
 const recvWindow = 5000;
@@ -21,6 +24,9 @@ const buildQuery = data => {
     }, [])
     .join("&");
 };
+
+// GET SERVER TIME
+export const getServerTime = () => axios.get(baseUrl+'api/v3/time').then(res => res.data.serverTime);
 
 // GET ACCOUNT
 export const getAccountData = (apiKey, apiSecret, data = {}) => {

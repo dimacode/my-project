@@ -21,8 +21,13 @@ let currency = {
     balance: '',
   },
 };
+let TRX = 150000;
+let BTC = 0.261;
+const initialPrice = 0.00000174;
 
-const commision = 200; // 0.5%
+
+
+const commision = 400; // 0.25%
 
 let pairs = {
   // TRXBTC: {

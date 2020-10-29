@@ -2,9 +2,9 @@ import React from 'react';
 // import axios from 'axios';
 // import crypto from 'crypto';
 
-import { startScript, getData, } from './logic3';
+// import { startScript, getData, } from './logic3';
 
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 class App extends React.Component {
@@ -15,24 +15,24 @@ class App extends React.Component {
     history: [],
   };
 
-  componentDidMount() {
+  // componentDidMount() {
     // (() => {
-      startScript();
+      // startScript();
     // }, 5000)
     
 
-    setInterval(() => {
-      this.setState(() => {
-        // console.log('PING_STATE')
-        return {
-          balance: getData().currency,
-          pairs: getData().pairs,
-          history: getData().history,
-        }
-      })
-    }, 10000);
+    // setInterval(() => {
+    //   this.setState(() => {
+    //     // console.log('PING_STATE')
+    //     return {
+    //       balance: getData().currency,
+    //       pairs: getData().pairs,
+    //       history: getData().history,
+    //     }
+    //   })
+    // }, 10000);
     
-  }
+  // }
 
   allHistory = (history) => history.length && history.map(h => {
     return (
@@ -57,6 +57,9 @@ class App extends React.Component {
     })
   }
 
+  getData = () => fetch('/123')
+  .then(d => console.log('data', d));
+
   render() { 
     const { balance, pairs, history } = this.state;
     console.log('history', balance, pairs, history)
@@ -66,6 +69,7 @@ class App extends React.Component {
     // console.log('STATE:', this.state)
     return (
       <div className="App">
+        <button onClick={this.getData}>Get data</button>
         {/* {this.allHistory(history)} */}
       </div>
     )

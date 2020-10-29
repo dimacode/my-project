@@ -1,4 +1,4 @@
-import { access_key, secret_key } from './keys';
+// import { access_key, secret_key } from './keys';
 const axios = require("axios");
 const crypto = require("crypto");
 
@@ -26,10 +26,11 @@ const buildQuery = data => {
 };
 
 // GET SERVER TIME
-export const getServerTime = () => axios.get(baseUrl+'api/v3/time').then(res => res.data.serverTime);
+const getServerTime = () => axios.get(baseUrl+'api/v3/time').then(res => res.data.serverTime);
+
 
 // GET ACCOUNT
-export const getAccountData = (apiKey, apiSecret, data = {}) => {
+const getAccountData = (apiKey, apiSecret, data = {}) => {
   if (!apiKey || !apiSecret) {
     throw new Error(
       "You need to pass an API key and secret to make authenticated calls."
@@ -61,7 +62,7 @@ export const getAccountData = (apiKey, apiSecret, data = {}) => {
 // })
 
 // GET LATEST PRICE
-export const getLatestPrice = (pairs = []) => {
+const getLatestPrice = (pairs = []) => {
   return axios.get(`${baseUrl}${latestPrice}`)
   .then(res => res.data)
   .then(prices => {
@@ -74,7 +75,7 @@ export const getLatestPrice = (pairs = []) => {
 //   .then(res => res.data)
 
 // SEND ORDER
-export const sendOrder = (apiKey, apiSecret, data) => {
+const sendOrder = (apiKey, apiSecret, data) => {
 
   if (!apiKey || !apiSecret) {
     throw new Error(
@@ -114,4 +115,11 @@ export const sendOrder = (apiKey, apiSecret, data) => {
 // }).then(account=>{
 //   console.log("account", account)
 // });
+
+module.exports = {
+  getServerTime,
+  sendOrder,
+  getLatestPrice,
+  getAccountData,
+};
 

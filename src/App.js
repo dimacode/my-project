@@ -57,8 +57,8 @@ class App extends React.Component {
     })
   }
 
-  getData = () => fetch('/123')
-  .then(d => console.log('data', d));
+  getData = () => fetch('http://localhost:4003/123')
+  .then(d => console.log('d', d));
 
   render() { 
     const { balance, pairs, history } = this.state;

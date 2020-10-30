@@ -3,19 +3,20 @@ let app = express();
 const { getServerTime, getAccountData } = require('./src/api')
 
 require('dotenv').config();
+const fs = require('fs');
 
 app.get('/123', (req, res) => {
-  // res.send('1:' + process.env.ACCESS_KEY)
+  // let rawdata = fs.readFileSync('message.json');
+  // let data = `[`+rawdata+`]`;
+  // readable.pipe(res);
 
-  const fs = require('fs');
-
-  let rawdata = fs.readFileSync('message.json');
-  let data = `[`+rawdata+`]`;
-  res.send(data)
-  
+  let rawdata = fs.readFileSync('message.json'); 
+  let student = JSON.parse(rawdata); 
+  console.log(student);
+  res.json(student)
 })
 
-app.listen(4013, () => {
+app.listen(4003, () => {
   const fs = require('fs');
   const ACCESS_KEY = process.env.ACCESS_KEY;
   const SECRET_KEY = process.env.SECRET_KEY;

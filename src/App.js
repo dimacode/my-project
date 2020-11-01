@@ -1,5 +1,5 @@
 import React from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 // import crypto from 'crypto';
 
 // import { startScript, getData, } from './logic3';
@@ -57,8 +57,9 @@ class App extends React.Component {
     })
   }
 
-  getData = () => fetch('http://localhost:4003/123')
-  .then(d => console.log('d', d));
+  getData = () => axios.get('http://localhost:4000/123')
+  .then(d => d.data)
+  .then(d => console.log(d));
 
   render() { 
     const { balance, pairs, history } = this.state;

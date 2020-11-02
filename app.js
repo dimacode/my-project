@@ -6,12 +6,12 @@ require('dotenv').config();
 const fs = require('fs');
 
 app.get('/123', (req, res) => {
-  let rawdata = fs.readFileSync('message.json'); 
+  let rawdata = fs.readFileSync('history.json'); 
   let collection = JSON.parse(rawdata); 
   res.json(collection)
 })
 
-app.listen(4000, () => {
+app.listen(4002, () => {
   const ACCESS_KEY = process.env.ACCESS_KEY;
   const SECRET_KEY = process.env.SECRET_KEY;
   const stableBalance = 150000;
@@ -36,6 +36,7 @@ app.listen(4000, () => {
       pair: 'BNBBTC',
       initialPrice: '',
       orderHistoryPrice: [],
+      currentSide: '',
       precision: {
         BNB: 2,
         BTC: 2,
@@ -48,15 +49,15 @@ app.listen(4000, () => {
   const startScript = () => {
     setInterval(() => {
       checkTime();
-    }, 5000);
+    }, 30000);
   };
 
   startScript();
 
   const checkTime = () => {
-    // const hours = new Date().getHours();
-    // const minutes = new Date().getMinutes();
-    // if (hours === 0 && minutes === 0) {
+    let hours = new Date().getHours();
+    let minutes = new Date().getMinutes();
+    if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
         // console.log('h / m', hours, ' : ', minutes);
         const hoursExc = new Date(time).getHours();
@@ -68,7 +69,7 @@ app.listen(4000, () => {
           getPrice();
         });
       })
-    // }
+    }
   };
 
   const loadBalances = () => 
@@ -130,24 +131,30 @@ app.listen(4000, () => {
       variableHistory.minPricePositiv = minPricePositiv;
       variableHistory.minPriceNegativ = minPriceNegativ;
 
-      if (newPrice >= minPricePositiv) {
+      const currentSide = pairs[lastPrices[i].symbol].currentSide;
+
+      if (newPrice >= minPricePositiv && currentSide !== 'buy') {
         // BUY
         console.log('BUY')
         variableHistory.side = 'BUY';
 
+        pairs[lastPrices[i].symbol].currentSide = 'buy';
         pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+        variableHistory.currentSide = 'buy';
         variableHistory.orderHistoryPrice = pairs[lastPrices[i].symbol].orderHistoryPrice;
 
         preparingOrder(currentPair, 'buy', newPrice);
         break;
       }
 
-      if (newPrice <= minPriceNegativ) {
+      if (newPrice <= minPriceNegativ && currentSide !== 'sell') {
         // SELL
         console.log('SEL')
         variableHistory.side = 'SELL';
 
+        pairs[lastPrices[i].symbol].currentSide = 'sell';
         pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+        variableHistory.currentSide = 'sell';
         variableHistory.orderHistoryPrice = pairs[lastPrices[i].symbol].orderHistoryPrice;
 
         preparingOrder(currentPair, 'sell', newPrice);
@@ -155,10 +162,11 @@ app.listen(4000, () => {
       }
 
       variableHistory.newPriseCheckFail = 'Not BUY not SELL';
-      let data = fs.readFileSync('message.json');
+      variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
+      let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
       collection.push(variableHistory);
-      fs.writeFileSync('message.json', JSON.stringify(collection))
+      fs.writeFileSync('history.json', JSON.stringify(collection))
       
       i++;
     };
@@ -170,7 +178,7 @@ app.listen(4000, () => {
     let precision = currentPair.precision[whatCrypto]; // 8
     let pair = currentPair.pair; // TRXBTC
     let balance = currency[whatCrypto].balance;
-
+    
     console.log('side -', side);
     console.log('pair - ', pair)
     console.log('balance - ', balance)
@@ -212,10 +220,10 @@ app.listen(4000, () => {
         console.log('Финиш баланс 1', currency[whatCrypto].balance);
         variableHistory.balanceFinish = currency[whatCrypto].balance;
 
-        let data = fs.readFileSync('message.json');
+        let data = fs.readFileSync('history.json');
         let collection = JSON.parse(data);
         collection.push(variableHistory);
-        fs.writeFileSync('message.json', JSON.stringify(collection))
+        fs.writeFileSync('history.json', JSON.stringify(collection))
         console.log('-------------------------------- ФИНИШ ---------------------------');
 
         history.push(variableHistory);

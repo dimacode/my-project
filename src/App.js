@@ -1,10 +1,5 @@
 import React from 'react';
 import axios from 'axios';
-// import crypto from 'crypto';
-
-// import { startScript, getData, } from './logic3';
-
-// import logo from './logo.svg';
 import './App.css';
 
 class App extends React.Component {
@@ -14,25 +9,6 @@ class App extends React.Component {
     pairs: {},
     history: [],
   };
-
-  // componentDidMount() {
-    // (() => {
-      // startScript();
-    // }, 5000)
-    
-
-    // setInterval(() => {
-    //   this.setState(() => {
-    //     // console.log('PING_STATE')
-    //     return {
-    //       balance: getData().currency,
-    //       pairs: getData().pairs,
-    //       history: getData().history,
-    //     }
-    //   })
-    // }, 10000);
-    
-  // }
 
   allHistory = (history) => history.length && history.map(h => {
     return (
@@ -57,17 +33,14 @@ class App extends React.Component {
     })
   }
 
-  getData = () => axios.get('http://localhost:4000/123')
+  getData = () => axios.get('http://localhost:4002/123')
   .then(d => d.data)
   .then(d => console.log(d));
 
   render() { 
     const { balance, pairs, history } = this.state;
     console.log('history', balance, pairs, history)
-    // JST: 3151.23156197
-    // USDT: 119.93938662
 
-    // console.log('STATE:', this.state)
     return (
       <div className="App">
         <button onClick={this.getData}>Get data</button>

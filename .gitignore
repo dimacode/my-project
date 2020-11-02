@@ -7,7 +7,7 @@
 /src/keys.js
 
 .env
-
+history.json
 # testing
 /coverage
 

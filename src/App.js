@@ -33,7 +33,7 @@ class App extends React.Component {
     })
   }
 
-  getData = () => axios.get('http://localhost:4002/123')
+  getData = () => axios.get('http://207.154.214.146:4002/123')
   .then(d => d.data)
   .then(d => console.log(d));
 

@@ -57,6 +57,7 @@ app.listen(4002, () => {
   const checkTime = () => {
     let hours = new Date().getHours();
     let minutes = new Date().getMinutes();
+    console.log('START SCRIPT 1')
     if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
         // console.log('h / m', hours, ' : ', minutes);

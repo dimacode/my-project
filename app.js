@@ -162,16 +162,16 @@ app.listen(4002, () => {
         preparingOrder(currentPair, 'sell', newPrice);
         break;
       }
-
-      variableHistory.newPriseCheckFail = 'Not BUY not SELL';
-      variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
       
       i++;
     };
+
+    variableHistory.newPriseCheckFail = 'Not BUY not SELL';
+    variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
   };
 
   const preparingOrder = (currentPair, side, newPrice) => {

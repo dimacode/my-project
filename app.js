@@ -89,6 +89,7 @@ app.listen(4002, () => {
         }
       });
       currency = {...newCurrency};
+      variableHistory.currency = currency;
     })
 
   const getPrice = () => {

@@ -49,7 +49,7 @@ app.listen(4002, () => {
   const startScript = () => {
     setInterval(() => {
       checkTime();
-    }, 30000);
+    }, 360000);
   };
 
   startScript();
@@ -64,11 +64,13 @@ app.listen(4002, () => {
         const hoursExc = new Date(time).getHours();
         const minutesExc = new Date(time).getMinutes();
         // console.log('hoursExc', hoursExc+':'+minutesExc);
-        loadBalances().then(() => {
-          console.log('START SCRIPT')
-          variableHistory.startTime = hoursExc +':'+minutesExc;
-          getPrice();
-        });
+        // if (hoursExc === 0 && minutesExc === 0 || hoursExc === 2 && minutesExc === 2 || hoursExc === 5 && minutesExc === 0 || hoursExc === 10 && minutesExc === 0) {
+          loadBalances().then(() => {
+            console.log('START SCRIPT')
+            variableHistory.startTime = hoursExc +':'+minutesExc;
+            getPrice();
+          });
+        // }
       })
     // }
   };
@@ -163,15 +165,15 @@ app.listen(4002, () => {
         break;
       }
       
+      variableHistory.newPriseCheckFail = 'Not BUY not SELL';
+      variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
+
       i++;
     };
-
-    variableHistory.newPriseCheckFail = 'Not BUY not SELL';
-    variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
   };
 
   const preparingOrder = (currentPair, side, newPrice) => {

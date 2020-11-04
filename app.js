@@ -123,8 +123,8 @@ app.listen(4002, () => {
       let lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       let newPrice = lastPrices[i].price; // 0.12345678
 
-      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
-      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
+      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 200);
+      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 200);
 
       console.log('1 - OrderHistoryPrice', currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1]);
       console.log('2 - InitialPrice', currentPair.initialPrice);
@@ -217,6 +217,14 @@ app.listen(4002, () => {
     console.log('Сумма сделки обрезанна', quantityWithPrecision);
     variableHistory.quantityWithCommision = quantityWithCommision;
     variableHistory.quantityWithPrecision = quantityWithPrecision;
+
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
+    // console.log('-------------------------------- ФИНИШ ---------------------------');
+    history.push(variableHistory);
+    variableHistory = {};
     
     sendOrder(access_key, secret_key, {
       symbol: pair, // TRXBTC
@@ -230,14 +238,14 @@ app.listen(4002, () => {
         console.log('Финиш баланс 1', currency[whatCrypto].balance);
         variableHistory.balanceFinish = currency[whatCrypto].balance;
 
-        let data = fs.readFileSync('history.json');
-        let collection = JSON.parse(data);
-        collection.push(variableHistory);
-        fs.writeFileSync('history.json', JSON.stringify(collection))
-        console.log('-------------------------------- ФИНИШ ---------------------------');
+        // let data = fs.readFileSync('history.json');
+        // let collection = JSON.parse(data);
+        // collection.push(variableHistory);
+        // fs.writeFileSync('history.json', JSON.stringify(collection))
+        // console.log('-------------------------------- ФИНИШ ---------------------------');
 
-        history.push(variableHistory);
-        variableHistory = {};
+        // history.push(variableHistory);
+        // variableHistory = {};
       });
     })
   };

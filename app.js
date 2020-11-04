@@ -178,6 +178,7 @@ app.listen(4002, () => {
       let collection = JSON.parse(data);
       collection.push(variableHistory);
       fs.writeFileSync('history.json', JSON.stringify(collection))
+      variableHistory = {};
 
       i++;
     };

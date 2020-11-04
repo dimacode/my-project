@@ -129,37 +129,41 @@ app.listen(4002, () => {
       console.log('1 - OrderHistoryPrice', currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1]);
       console.log('2 - InitialPrice', currentPair.initialPrice);
       console.log('3 - LastOrderPrice', lastOrderPrice);
-      variableHistory.orderHistoryPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1];
       variableHistory.initialPrice = currentPair.initialPrice;
       variableHistory.lastOrderPrice = lastOrderPrice;
-      variableHistory.minPricePositiv = minPricePositiv;
-      variableHistory.minPriceNegativ = minPriceNegativ;
-
+      variableHistory.newPrice = newPrice;
+      
       const currentSide = pairs[lastPrices[i].symbol].currentSide;
 
-      if (newPrice >= minPricePositiv && currentSide !== 'buy') {
+      if (newPrice >= minPricePositiv && currentSide !== "buy") {
         // BUY
         console.log('BUY')
-        variableHistory.side = 'BUY';
 
-        pairs[lastPrices[i].symbol].currentSide = 'buy';
+        pairs[lastPrices[i].symbol].currentSide = "buy";
         pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+
+        variableHistory.newPrice = newPrice;
+        variableHistory.ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv && currentSide !== "buy"
+        variableHistory.newPricePushed = pairs[lastPrices[i].symbol].orderHistoryPrice;
         variableHistory.currentSide = 'buy';
-        variableHistory.orderHistoryPrice = pairs[lastPrices[i].symbol].orderHistoryPrice;
+        variableHistory.minPricePositiv = minPricePositiv;
 
         preparingOrder(currentPair, 'buy', newPrice);
         break;
       }
 
-      if (newPrice <= minPriceNegativ && currentSide !== 'sell') {
+      if (newPrice <= minPriceNegativ && currentSide !== "sell") {
         // SELL
         console.log('SEL')
-        variableHistory.side = 'SELL';
 
         pairs[lastPrices[i].symbol].currentSide = 'sell';
         pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+
+        variableHistory.newPrice = newPrice;
+        variableHistory.ifNewPriceLessMinPriceNegativ = newPrice <= minPriceNegativ && currentSide !== "sell"
+        variableHistory.newPricePushed = pairs[lastPrices[i].symbol].orderHistoryPrice;
         variableHistory.currentSide = 'sell';
-        variableHistory.orderHistoryPrice = pairs[lastPrices[i].symbol].orderHistoryPrice;
+        variableHistory.minPriceNegativ = minPriceNegativ;
 
         preparingOrder(currentPair, 'sell', newPrice);
         break;
@@ -167,6 +171,9 @@ app.listen(4002, () => {
       
       variableHistory.newPriseCheckFail = 'Not BUY not SELL';
       variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
+      variableHistory.minPricePositiv = minPricePositiv;
+      variableHistory.minPriceNegativ = minPriceNegativ;
+
       let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
       collection.push(variableHistory);
@@ -186,7 +193,6 @@ app.listen(4002, () => {
     console.log('side -', side);
     console.log('pair - ', pair)
     console.log('balance - ', balance)
-    variableHistory.side = side;
     variableHistory.pair = pair;
     variableHistory.balance = balance;
 

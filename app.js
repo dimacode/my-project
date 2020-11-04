@@ -55,8 +55,8 @@ app.listen(4002, () => {
   startScript();
 
   const checkTime = () => {
-    let hours = new Date().getHours();
-    let minutes = new Date().getMinutes();
+    // let hours = new Date().getHours();
+    // let minutes = new Date().getMinutes();
     // console.log('START SCRIPT 1')
     // if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
@@ -64,13 +64,13 @@ app.listen(4002, () => {
         const hoursExc = new Date(time).getHours();
         const minutesExc = new Date(time).getMinutes();
         // console.log('hoursExc', hoursExc+':'+minutesExc);
-        // if (hoursExc === 0 && minutesExc === 0 || hoursExc === 2 && minutesExc === 2 || hoursExc === 5 && minutesExc === 0 || hoursExc === 10 && minutesExc === 0) {
+        if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
             console.log('START SCRIPT')
             variableHistory.startTime = hoursExc +':'+minutesExc;
             getPrice();
           });
-        // }
+        }
       })
     // }
   };

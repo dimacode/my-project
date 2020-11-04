@@ -49,7 +49,7 @@ app.listen(4002, () => {
   const startScript = () => {
     setInterval(() => {
       checkTime();
-    }, 360000);
+    }, 3600000);
   };
 
   startScript();
@@ -123,8 +123,8 @@ app.listen(4002, () => {
       let lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       let newPrice = lastPrices[i].price; // 0.12345678
 
-      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 200);
-      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 200);
+      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
+      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
       console.log('1 - OrderHistoryPrice', currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1]);
       console.log('2 - InitialPrice', currentPair.initialPrice);

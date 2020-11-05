@@ -49,20 +49,21 @@ app.listen(4002, () => {
   const startScript = () => {
 
     setInterval(() => {
-      // let hours = new Date().getHours() - 2;
-      // if (hours == 0) {
-        // variableHistory.localTime = hours;
+      let hours = new Date().getHours();
+      let minutes = new Date().getMinutes();
+      if (hours == 0) {
+        variableHistory.localTime = hours+':'+minutes;
         checkTime();
-      // }
-    }, 10000);
+      }
+    }, 30000);
     
   };
 
   startScript();
 
   const checkTime = () => {
-    let hours = new Date().getHours();
-    let minutes = new Date().getMinutes();
+    // let hours = new Date().getHours();
+    // let minutes = new Date().getMinutes();
     // console.log('START SCRIPT 1')
     // if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
@@ -74,7 +75,6 @@ app.listen(4002, () => {
           loadBalances().then(() => {
             console.log('START SCRIPT')
             variableHistory.startTime = hoursExc +':'+minutesExc;
-            variableHistory.localTime = hours+':'+minutes;
             getPrice();
           });
         // }

@@ -47,9 +47,12 @@ app.listen(4002, () => {
   
 
   const startScript = () => {
+
     setInterval(() => {
       checkTime();
-    }, 3600000);
+    }, 30000);
+
+    
   };
 
   startScript();
@@ -64,13 +67,13 @@ app.listen(4002, () => {
         const hoursExc = new Date(time).getHours();
         const minutesExc = new Date(time).getMinutes();
         // console.log('hoursExc', hoursExc+':'+minutesExc);
-        if (hoursExc === 0 && minutesExc === 0) {
+        // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
             console.log('START SCRIPT')
             variableHistory.startTime = hoursExc +':'+minutesExc;
             getPrice();
           });
-        }
+        // }
       })
     // }
   };

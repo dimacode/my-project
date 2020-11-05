@@ -104,7 +104,6 @@ const sendOrder = (apiKey, apiSecret, data) => {
       },
     })
     .then(x=>x.data)
-    .catch((err) => {console.log("error:", err); return err});
 };
 
 // sendOrder(access_key, secret_key, {

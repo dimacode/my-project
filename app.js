@@ -49,17 +49,20 @@ app.listen(4002, () => {
   const startScript = () => {
 
     setInterval(() => {
-      checkTime();
-    }, 30000);
-
+      // let hours = new Date().getHours() - 2;
+      // if (hours == 0) {
+        // variableHistory.localTime = hours;
+        checkTime();
+      // }
+    }, 10000);
     
   };
 
   startScript();
 
   const checkTime = () => {
-    // let hours = new Date().getHours();
-    // let minutes = new Date().getMinutes();
+    let hours = new Date().getHours();
+    let minutes = new Date().getMinutes();
     // console.log('START SCRIPT 1')
     // if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
@@ -71,6 +74,7 @@ app.listen(4002, () => {
           loadBalances().then(() => {
             console.log('START SCRIPT')
             variableHistory.startTime = hoursExc +':'+minutesExc;
+            variableHistory.localTime = hours+':'+minutes;
             getPrice();
           });
         // }
@@ -222,35 +226,34 @@ app.listen(4002, () => {
     variableHistory.quantityWithCommision = quantityWithCommision;
     variableHistory.quantityWithPrecision = quantityWithPrecision;
 
-    // let data = fs.readFileSync('history.json');
-    // let collection = JSON.parse(data);
-    // collection.push(variableHistory);
-    // fs.writeFileSync('history.json', JSON.stringify(collection))
-    // // console.log('-------------------------------- ФИНИШ ---------------------------');
-    // history.push(variableHistory);
-    // variableHistory = {};
     
     sendOrder(access_key, secret_key, {
       symbol: pair, // TRXBTC
       side: side, // sell
       type: 'MARKET',
       quantity: quantityWithPrecision,
-    }).then(res => {
+    })
+    .then(res => {
       loadBalances().then(() => {
+        variableHistory.sendOrderSUCCESS = true;
         console.log('Обновляем балансы')
         variableHistory.updateBalances = true;
         console.log('Финиш баланс 1', currency[whatCrypto].balance);
         variableHistory.balanceFinish = currency[whatCrypto].balance;
-
-        let data = fs.readFileSync('history.json');
-        let collection = JSON.parse(data);
-        collection.push(variableHistory);
-        fs.writeFileSync('history.json', JSON.stringify(collection))
-        console.log('-------------------------------- ФИНИШ ---------------------------');
-
-        history.push(variableHistory);
-        variableHistory = {};
       });
+    })
+    .catch(err => {
+      variableHistory.sendOrderERROR = err;
+    })
+    .finally(() => {
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
+      console.log('-------------------------------- ФИНИШ ---------------------------');
+
+      history.push(variableHistory);
+      variableHistory = {};
     })
   };
   

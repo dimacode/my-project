@@ -129,9 +129,9 @@ app.listen(4002, () => {
     // let i = 0;
     // while (i < lastPrices.length) {
 
-      let currentPair = pairs[lastPrices[i].symbol]; // TRXBTC
+      let currentPair = pairs[lastPrices[0].symbol]; // TRXBTC
       let lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
-      let newPrice = lastPrices[i].price; // 0.12345678
+      let newPrice = lastPrices[0].price; // 0.12345678
 
       const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
       const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
@@ -143,18 +143,18 @@ app.listen(4002, () => {
       variableHistory.lastOrderPrice = lastOrderPrice;
       variableHistory.newPrice = newPrice;
       
-      const currentSide = pairs[lastPrices[i].symbol].currentSide;
+      const currentSide = pairs[lastPrices[0].symbol].currentSide;
 
       if (newPrice >= minPricePositiv && currentSide !== "buy") {
         // BUY
         console.log('BUY')
 
-        pairs[lastPrices[i].symbol].currentSide = "buy";
-        pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+        pairs[lastPrices[0].symbol].currentSide = "buy";
+        pairs[lastPrices[0].symbol].orderHistoryPrice.push(newPrice);
 
         variableHistory.newPrice = newPrice;
         variableHistory.ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv && currentSide !== "buy"
-        variableHistory.newPricePushed = pairs[lastPrices[i].symbol].orderHistoryPrice;
+        variableHistory.newPricePushed = pairs[lastPrices[0].symbol].orderHistoryPrice;
         variableHistory.currentSide = 'buy';
         variableHistory.minPricePositiv = minPricePositiv;
 
@@ -164,21 +164,21 @@ app.listen(4002, () => {
         // SELL
         console.log('SEL')
 
-        pairs[lastPrices[i].symbol].currentSide = 'sell';
-        pairs[lastPrices[i].symbol].orderHistoryPrice.push(newPrice);
+        pairs[lastPrices[0].symbol].currentSide = 'sell';
+        pairs[lastPrices[0].symbol].orderHistoryPrice.push(newPrice);
 
         variableHistory.newPrice = newPrice;
         variableHistory.ifNewPriceLessMinPriceNegativ = newPrice <= minPriceNegativ && currentSide !== "sell"
-        variableHistory.newPricePushed = pairs[lastPrices[i].symbol].orderHistoryPrice;
+        variableHistory.newPricePushed = pairs[lastPrices[0].symbol].orderHistoryPrice;
         variableHistory.currentSide = 'sell';
         variableHistory.minPriceNegativ = minPriceNegativ;
 
         preparingOrder(currentPair, 'sell', newPrice);
 
       } else {
-        
+
         variableHistory.newPriseCheckFail = 'Not BUY not SELL';
-        variableHistory.currentSide = pairs[lastPrices[i].symbol].currentSide;
+        variableHistory.currentSide = pairs[lastPrices[0].symbol].currentSide;
         variableHistory.minPricePositiv = minPricePositiv;
         variableHistory.minPriceNegativ = minPriceNegativ;
   

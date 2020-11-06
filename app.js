@@ -257,7 +257,7 @@ app.listen(4002, () => {
     variableHistory.quantityWithPrecision = quantityWithPrecision;
 
     
-    sendOrder(access_key, secret_key, {
+    sendOrder(ACCESS_KEY, SECRET_KEY, {
       symbol: pair, // TRXBTC
       side: side, // sell
       type: 'MARKET',

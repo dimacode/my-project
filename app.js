@@ -260,6 +260,17 @@ app.listen(4002, () => {
     variableHistory.quantityWithCommision = quantityWithCommision;
     variableHistory.quantityWithPrecision = quantityWithPrecision;
 
+    const addLogToHistory = () => {
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
+      console.log('-------------------------------- ФИНИШ ---------------------------');
+
+      history.push(variableHistory);
+      variableHistory = {};
+    }
+
     
     sendOrder(ACCESS_KEY, SECRET_KEY, {
       symbol: pair, // TRXBTC
@@ -269,26 +280,20 @@ app.listen(4002, () => {
     })
     .then(res => {
       variableHistory.sendOrderThenRes = res;
-      loadBalances().then(() => {
-        variableHistory.sendOrderSUCCESS = true;
-        console.log('Обновляем балансы')
-        variableHistory.updateBalances = true;
-        console.log('Финиш баланс 1', currency[whatCrypto].balance);
-        variableHistory.balanceFinish = currency[whatCrypto].balance;
-      });
+      addLogToHistory();
+      // loadBalances().then(() => {
+      //   variableHistory.sendOrderSUCCESS = true;
+      //   console.log('Обновляем балансы')
+      //   variableHistory.updateBalances = true;
+      //   console.log('Финиш баланс 1', currency[whatCrypto].balance);
+      //   variableHistory.balanceFinish = currency[whatCrypto].balance;
+      // });
     })
     .catch(err => {
       variableHistory.sendOrderERROR = err;
     })
     .finally(() => {
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
-      console.log('-------------------------------- ФИНИШ ---------------------------');
-
-      history.push(variableHistory);
-      variableHistory = {};
+      addLogToHistory();
     })
   };
   

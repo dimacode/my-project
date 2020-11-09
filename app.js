@@ -49,13 +49,15 @@ app.listen(4002, () => {
   const startScript = () => {
 
     setInterval(() => {
+      let day = new Date().getDate();
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
+      let seconds = new Date().getSeconds();
       if (hours == 0 && minutes == 0) {
-        variableHistory.localTime = hours+':'+minutes;
+        variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
       }
-    }, 45000);
+    }, 30000);
     
   };
 
@@ -68,13 +70,15 @@ app.listen(4002, () => {
     // if (hours === 0 && minutes === 0) {
       getServerTime().then(time => {
         // console.log('h / m', hours, ' : ', minutes);
+        const dayExc = new Date().getDate();
         const hoursExc = new Date(time).getHours();
         const minutesExc = new Date(time).getMinutes();
+        const secondsExc = new Date(time).getSeconds();
         // console.log('hoursExc', hoursExc+':'+minutesExc);
         // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
             console.log('START SCRIPT')
-            variableHistory.startTime = hoursExc +':'+minutesExc;
+            variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
             getPrice();
           });
         // }

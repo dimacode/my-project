@@ -53,10 +53,10 @@ app.listen(4002, () => {
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
       let seconds = new Date().getSeconds();
-      if (hours == 0 && minutes == 0) {
+      // if (hours == 0 && minutes == 0) {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
-      }
+      // }
     }, 30000);
     
   };
@@ -137,8 +137,8 @@ app.listen(4002, () => {
       let lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       let newPrice = lastPrices[0].price; // 0.12345678
 
-      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
-      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
+      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
+      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
 
       console.log('1 - OrderHistoryPrice', currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1]);
       console.log('2 - InitialPrice', currentPair.initialPrice);
@@ -230,7 +230,7 @@ app.listen(4002, () => {
     let whatCrypto = side === 'sell' ? currentPair.base : currentPair.qoute; // TRX or BTC
     let precision = currentPair.precision[whatCrypto]; // 8
     let pair = currentPair.pair; // TRXBTC
-    let balance = currency[whatCrypto].balance;
+    let balance = (currency[whatCrypto].balance) / 100;
     
     console.log('side -', side);
     console.log('pair - ', pair)

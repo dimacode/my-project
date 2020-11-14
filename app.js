@@ -131,8 +131,8 @@ app.listen(4002, () => {
   const checkPrice = (lastPrices) => {
     // let i = 0;
     // while (i < lastPrices.length) {
-
-      const currentPair = pairs[lastPrices[0].symbol]; // TRXBTC {}
+      const symbol = lastPrices[0].symbol; // "TRXBTC"
+      const currentPair = pairs[symbol]; // TRXBTC {}
       const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       const newPrice = lastPrices[0].price; // 0.12345678
 
@@ -153,13 +153,13 @@ app.listen(4002, () => {
 
       if (newPrice >= minPricePositiv) {
         // BUY
-        currentPair.orderHistoryPrice.push(newPrice);
+        pairs[symbol].orderHistoryPrice.push(newPrice);
 
-        variableHistory.B_1_currentPairAfterPush = {...currentPair};
+        // variableHistory.B_1_currentPairAfterPush = {...currentPair};
         variableHistory.B_2_pairsAfterPush = {...pairs};
 
         if (currentSide !== "buy") {
-          currentPair.currentSide = "buy";
+          pairs[symbol].currentSide = "buy";
           
           variableHistory.C_1_newPrice = newPrice;
           variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv;
@@ -167,10 +167,10 @@ app.listen(4002, () => {
           variableHistory.C_4_minPricePositiv = minPricePositiv;
           variableHistory.C_5_minPriceNegativ = minPriceNegativ;
 
-          variableHistory.C_6_currentPairAfterPush = {...currentPair};
+          // variableHistory.C_6_currentPairAfterPush = {...currentPair};
           variableHistory.C_7_pairsAfterPush = {...pairs};
   
-          preparingOrder(currentPair, 'buy', newPrice);
+          preparingOrder(symbol, 'buy', newPrice);
           // break;
         } else {
 
@@ -185,13 +185,13 @@ app.listen(4002, () => {
         
       } else if (newPrice <= minPriceNegativ) {
         // SELL
-        currentPair.orderHistoryPrice.push(newPrice);
+        pairs[symbol].orderHistoryPrice.push(newPrice);
 
-        variableHistory.B_1_currentPairAfterPush = {...currentPair};
+        // variableHistory.B_1_currentPairAfterPush = {...currentPair};
         variableHistory.B_2_pairsAfterPush = {...pairs};
 
         if (currentSide !== "sell") {
-          currentPair.currentSide = 'sell';
+          pairs[symbol].currentSide = 'sell';
 
           variableHistory.C_1_newPrice = newPrice;
           variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice <= minPriceNegativ;
@@ -199,10 +199,10 @@ app.listen(4002, () => {
           variableHistory.C_4_minPricePositiv = minPricePositiv;
           variableHistory.C_5_minPriceNegativ = minPriceNegativ;
 
-          variableHistory.C_6_currentPairAfterPush = {...currentPair};
+          // variableHistory.C_6_currentPairAfterPush = {...currentPair};
           variableHistory.C_7_pairsAfterPush = {...pairs};
 
-          preparingOrder(currentPair, 'sell', newPrice);
+          preparingOrder(symbol, 'sell', newPrice);
 
         } else {
 
@@ -218,7 +218,7 @@ app.listen(4002, () => {
       } else {
 
         variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
-        variableHistory.A_8_currentSide = currentPair.currentSide;
+        variableHistory.A_8_currentSide = pairs[symbol].currentSide;
         variableHistory.A_9_newPrice = newPrice;
         variableHistory.A_10_minPricePositiv = minPricePositiv;
         variableHistory.A_11_minPriceNegativ = minPriceNegativ;
@@ -262,11 +262,11 @@ app.listen(4002, () => {
     // };
   };
 
-  const preparingOrder = (currentPair, side, newPrice) => {
+  const preparingOrder = (symbol, side, newPrice) => {
 
-    const whatCrypto = side === 'sell' ? currentPair.base : currentPair.qoute; // TRX or BTC
-    const precision = currentPair.precision[whatCrypto]; // 8
-    const pair = currentPair.pair; // TRXBTC
+    const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
+    const precision = pairs[symbol].precision[whatCrypto]; // 8
+    const pair = pairs[symbol].pair; // TRXBTC
     let balance = (currency[whatCrypto].balance) / 100;
     
     variableHistory.D_1_whatCrypto = whatCrypto;
@@ -291,9 +291,9 @@ app.listen(4002, () => {
     const quantityWithCommision = balance - (balance / commision);
     let quantityWithPrecision = quantityWithCommision.toFixed(precision);
 
-    if (side === 'buy') {
-      quantityWithPrecision = quantityWithCommision.toFixed();
-    }
+    // if (side === 'buy') {
+    //   quantityWithPrecision = quantityWithCommision.toFixed();
+    // }
 
     // console.log('Баланс с комисией', quantityWithCommision)
     // console.log('Сумма сделки обрезанна', quantityWithPrecision);
@@ -301,7 +301,7 @@ app.listen(4002, () => {
     variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
     const addLogToHistory = () => {
-      variableHistory.F_1_currentPair = {...currentPair};
+      // variableHistory.F_1_currentPair = {...pairs[symbol]};
       variableHistory.F_2_pairs = {...pairs};
 
       let data = fs.readFileSync('history.json');

@@ -15,7 +15,7 @@ app.listen(4002, () => {
   const ACCESS_KEY = process.env.ACCESS_KEY;
   const SECRET_KEY = process.env.SECRET_KEY;
   const stableBalance = 150000;
-  const commision = 1100; // 0.01%
+  const commision = 1000; // 0.01%
   let isInitialPrice = true;
   let history = [];
   let variableHistory = {};
@@ -136,8 +136,8 @@ app.listen(4002, () => {
       const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       const newPrice = lastPrices[0].price; // 0.12345678
 
-      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
-      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
+      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
+      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
       // variableHistory.initialPrice = currentPair.initialPrice;
       variableHistory.A_0_pairs = {...pairs};
@@ -267,7 +267,7 @@ app.listen(4002, () => {
     const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
     const precision = pairs[symbol].precision[whatCrypto]; // 8
     const pair = pairs[symbol].pair; // TRXBTC
-    let balance = (currency[whatCrypto].balance) / 100;
+    let balance = currency[whatCrypto].balance;
     
     variableHistory.D_1_whatCrypto = whatCrypto;
     variableHistory.D_2_precision = precision;

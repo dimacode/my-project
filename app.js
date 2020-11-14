@@ -53,11 +53,11 @@ app.listen(4002, () => {
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
       let seconds = new Date().getSeconds();
-      if (hours == 0 && minutes == 0) {
+      // if (hours == 0 && minutes == 0) {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
-      }
-    }, 30000);
+      // }
+    }, 60000);
     
   };
 
@@ -77,7 +77,6 @@ app.listen(4002, () => {
         // console.log('hoursExc', hoursExc+':'+minutesExc);
         // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
-            console.log('START SCRIPT')
             variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
             getPrice();
           });
@@ -123,7 +122,7 @@ app.listen(4002, () => {
       };
 
       // console.log('lastPrices', lastPrices[0].price)
-      variableHistory.lastPrice = lastPrices;
+      // variableHistory.lastPrice = lastPrices;
 
       checkPrice(lastPrices);
     });
@@ -133,63 +132,96 @@ app.listen(4002, () => {
     // let i = 0;
     // while (i < lastPrices.length) {
 
-      let currentPair = pairs[lastPrices[0].symbol]; // TRXBTC
-      let lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
-      let newPrice = lastPrices[0].price; // 0.12345678
+      const currentPair = pairs[lastPrices[0].symbol]; // TRXBTC {}
+      const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
+      const newPrice = lastPrices[0].price; // 0.12345678
 
       const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
       const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
-      console.log('1 - OrderHistoryPrice', currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1]);
-      console.log('2 - InitialPrice', currentPair.initialPrice);
-      console.log('3 - LastOrderPrice', lastOrderPrice);
-      variableHistory.initialPrice = currentPair.initialPrice;
-      variableHistory.lastOrderPrice = lastOrderPrice;
-      variableHistory.newPrice = newPrice;
+      // variableHistory.initialPrice = currentPair.initialPrice;
+      variableHistory.A_0_pairs = {...pairs};
+      variableHistory.A_1_lastPrices = lastPrices;
+      variableHistory.A_2_currentPair = {...currentPair};
+      variableHistory.A_3_lastOrderPrice = lastOrderPrice;
+      variableHistory.A_4_newPrice = newPrice;
+
+      variableHistory.A_5_minPricePositiv = minPricePositiv;
+      variableHistory.A_6_minPriceNegativ = minPriceNegativ;
       
-      const currentSide = pairs[lastPrices[0].symbol].currentSide;
+      const currentSide = currentPair.currentSide;
 
       if (newPrice >= minPricePositiv) {
         // BUY
-        pairs[lastPrices[0].symbol].orderHistoryPrice.push(newPrice);
-        if (currentSide !== "buy") {
-          console.log('BUY')
+        currentPair.orderHistoryPrice.push(newPrice);
 
-          pairs[lastPrices[0].symbol].currentSide = "buy";
+        variableHistory.B_1_currentPairAfterPush = {...currentPair};
+        variableHistory.B_2_pairsAfterPush = {...pairs};
+
+        if (currentSide !== "buy") {
+          currentPair.currentSide = "buy";
           
-          variableHistory.newPrice = newPrice;
-          variableHistory.ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv && currentSide !== "buy"
-          variableHistory.newPricePushed = pairs[lastPrices[0].symbol].orderHistoryPrice;
-          variableHistory.currentSide = 'buy';
-          variableHistory.minPricePositiv = minPricePositiv;
+          variableHistory.C_1_newPrice = newPrice;
+          variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv;
+          variableHistory.C_3_currentSide = "buy";
+          variableHistory.C_4_minPricePositiv = minPricePositiv;
+          variableHistory.C_5_minPriceNegativ = minPriceNegativ;
+
+          variableHistory.C_6_currentPairAfterPush = {...currentPair};
+          variableHistory.C_7_pairsAfterPush = {...pairs};
   
           preparingOrder(currentPair, 'buy', newPrice);
           // break;
+        } else {
+
+          variableHistory.B_3_pushedNewMaxPrice = 'ADD NEW MAX PRICE';
+
+          let data = fs.readFileSync('history.json');
+          let collection = JSON.parse(data);
+          collection.push(variableHistory);
+          fs.writeFileSync('history.json', JSON.stringify(collection))
+          variableHistory = {};
         }
         
       } else if (newPrice <= minPriceNegativ) {
         // SELL
-        pairs[lastPrices[0].symbol].orderHistoryPrice.push(newPrice);
+        currentPair.orderHistoryPrice.push(newPrice);
+
+        variableHistory.B_1_currentPairAfterPush = {...currentPair};
+        variableHistory.B_2_pairsAfterPush = {...pairs};
+
         if (currentSide !== "sell") {
-          console.log('SEL')
+          currentPair.currentSide = 'sell';
 
-          pairs[lastPrices[0].symbol].currentSide = 'sell';
+          variableHistory.C_1_newPrice = newPrice;
+          variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice <= minPriceNegativ;
+          variableHistory.C_3_currentSide = "sell";
+          variableHistory.C_4_minPricePositiv = minPricePositiv;
+          variableHistory.C_5_minPriceNegativ = minPriceNegativ;
 
-          variableHistory.newPrice = newPrice;
-          variableHistory.ifNewPriceLessMinPriceNegativ = newPrice <= minPriceNegativ && currentSide !== "sell"
-          variableHistory.newPricePushed = pairs[lastPrices[0].symbol].orderHistoryPrice;
-          variableHistory.currentSide = 'sell';
-          variableHistory.minPriceNegativ = minPriceNegativ;
+          variableHistory.C_6_currentPairAfterPush = {...currentPair};
+          variableHistory.C_7_pairsAfterPush = {...pairs};
 
           preparingOrder(currentPair, 'sell', newPrice);
+
+        } else {
+
+          variableHistory.B_3_pushedNewMinPrice = 'ADD NEW MIN PRICE';
+
+          let data = fs.readFileSync('history.json');
+          let collection = JSON.parse(data);
+          collection.push(variableHistory);
+          fs.writeFileSync('history.json', JSON.stringify(collection))
+          variableHistory = {};
         }
 
       } else {
 
-        variableHistory.newPriseCheckFail = 'Not BUY not SELL';
-        variableHistory.currentSide = pairs[lastPrices[0].symbol].currentSide;
-        variableHistory.minPricePositiv = minPricePositiv;
-        variableHistory.minPriceNegativ = minPriceNegativ;
+        variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
+        variableHistory.A_8_currentSide = currentPair.currentSide;
+        variableHistory.A_9_newPrice = newPrice;
+        variableHistory.A_10_minPricePositiv = minPricePositiv;
+        variableHistory.A_11_minPriceNegativ = minPriceNegativ;
   
         let data = fs.readFileSync('history.json');
         let collection = JSON.parse(data);
@@ -232,40 +264,46 @@ app.listen(4002, () => {
 
   const preparingOrder = (currentPair, side, newPrice) => {
 
-    let whatCrypto = side === 'sell' ? currentPair.base : currentPair.qoute; // TRX or BTC
-    let precision = currentPair.precision[whatCrypto]; // 8
-    let pair = currentPair.pair; // TRXBTC
-    let balance = currency[whatCrypto].balance;
+    const whatCrypto = side === 'sell' ? currentPair.base : currentPair.qoute; // TRX or BTC
+    const precision = currentPair.precision[whatCrypto]; // 8
+    const pair = currentPair.pair; // TRXBTC
+    let balance = (currency[whatCrypto].balance) / 100;
     
-    console.log('side -', side);
-    console.log('pair - ', pair)
-    console.log('balance - ', balance)
-    variableHistory.pair = pair;
-    variableHistory.balance = balance;
+    variableHistory.D_1_whatCrypto = whatCrypto;
+    variableHistory.D_2_precision = precision;
+    variableHistory.D_3_pair = pair;
+    variableHistory.D_4_balance = balance;
 
     if (side === 'buy') {
       balance = balance / newPrice; // BTC convert to TRX
-      console.log('ВТС конвертирован в BNB = ', balance);
-      variableHistory.btcConverted = balance;
+      // console.log('ВТС конвертирован в BNB = ', balance);
+      variableHistory.D_5_btcConverted = balance;
     }
     if (side === 'sell') {
       // balance -= stableBalance; // TRX minus stable balance
-      console.log('BNB = ', balance);
-      variableHistory.bnbConverted = balance;
+      // console.log('BNB = ', balance);
+      variableHistory.D_5_bnbConverted = balance;
     }
 
     // console.log('balance', balance);
     console.log('============== 1 ОРДЕР ===============')
 
     const quantityWithCommision = balance - (balance / commision);
-    const quantityWithPrecision = quantityWithCommision.toFixed(precision);
+    let quantityWithPrecision = quantityWithCommision.toFixed(precision);
 
-    console.log('Баланс с комисией', quantityWithCommision)
-    console.log('Сумма сделки обрезанна', quantityWithPrecision);
-    variableHistory.quantityWithCommision = quantityWithCommision;
-    variableHistory.quantityWithPrecision = quantityWithPrecision;
+    if (side === 'buy') {
+      quantityWithPrecision = quantityWithCommision.toFixed();
+    }
+
+    // console.log('Баланс с комисией', quantityWithCommision)
+    // console.log('Сумма сделки обрезанна', quantityWithPrecision);
+    variableHistory.D_6_quantityWithCommision = quantityWithCommision;
+    variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
     const addLogToHistory = () => {
+      variableHistory.F_1_currentPair = {...currentPair};
+      variableHistory.F_2_pairs = {...pairs};
+
       let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
       collection.push(variableHistory);

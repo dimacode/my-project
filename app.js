@@ -53,11 +53,11 @@ app.listen(4002, () => {
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
       let seconds = new Date().getSeconds();
-      // if (hours == 0 && minutes == 0) {
+      if (hours == 0 && minutes == 0) {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
-      // }
-    }, 60000);
+      }
+    }, 45000);
     
   };
 

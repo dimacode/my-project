@@ -136,8 +136,8 @@ app.listen(4002, () => {
       const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
       const newPrice = lastPrices[0].price; // 0.12345678
 
-      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
-      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
+      const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
+      const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
 
       // variableHistory.initialPrice = currentPair.initialPrice;
       variableHistory.A_0_pairs = {...pairs};

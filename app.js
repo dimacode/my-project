@@ -38,8 +38,8 @@ app.listen(4002, () => {
       orderHistoryPrice: [],
       currentSide: '',
       precision: {
-        TRX: 2,
-        BTC: 2,
+        TRX: 0,
+        BTC: 0,
       },
     },
   };

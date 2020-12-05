@@ -57,7 +57,7 @@ app.listen(4002, () => {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
       }
-    }, 45000);
+    }, 30000);
     
   };
 

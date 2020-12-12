@@ -44,31 +44,6 @@ app.listen(4002, () => {
     },
   };
 
-  
-
-  
-  const checkBalance = () => {
-    variableHistory.a2 = 2;
-    const { TRX, BTC } = currency;
-    if (TRX.balance === '' && BTC.balance === '') {
-      variableHistory.a3 = 3;
-      loadBalances().then(() => {
-        variableHistory.a4 = 4;
-        variableHistory.loadFirstBalance = true;
-        // getPrice();
-      });
-    } else {
-      variableHistory.a5 = 5;
-      // getPrice();
-    }
-
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
-    // variableHistory = {};
-  };
-
   const startScript = () => {
     variableHistory.a0 = 1;
     // let data = fs.readFileSync('history.json');
@@ -82,6 +57,30 @@ app.listen(4002, () => {
   };
 
   startScript();
+
+  const checkBalance = () => {
+    variableHistory.a2 = 2;
+    const { TRX, BTC } = currency;
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
+    
+    if (TRX.balance === '' && BTC.balance === '') {
+      variableHistory.a3 = 3;
+      loadBalances().then(() => {
+        variableHistory.a4 = 4;
+        variableHistory.loadFirstBalance = true;
+        // getPrice();
+      });
+    } else {
+      variableHistory.a5 = 5;
+      // getPrice();
+    }
+
+    
+    // variableHistory = {};
+  };
 
 
   const loadBalances = () => 

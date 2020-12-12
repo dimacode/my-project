@@ -49,7 +49,7 @@ app.listen(4002, () => {
   const startScript = () => {
     setInterval(() => {
       checkBalance();
-    }, 60000);
+    }, 10000);
   };
 
   startScript();
@@ -87,6 +87,9 @@ app.listen(4002, () => {
     })
     .catch(err => {
       variableHistory.loadBalancesFAILS = err;
+    })
+    .finally(() => {
+      variableHistory.loadBalances = true;
     })
 
   const getPrice = () => {
@@ -147,10 +150,10 @@ app.listen(4002, () => {
     // variableHistory.A_10_minPricePositiv = minPricePositiv;
     // variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
-    // let data = fs.readFileSync('history.json');
-    // let collection = JSON.parse(data);
-    // collection.push(variableHistory);
-    // fs.writeFileSync('history.json', JSON.stringify(collection))
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
     variableHistory = {};
   };
 
@@ -208,6 +211,7 @@ app.listen(4002, () => {
       fs.writeFileSync('history.json', JSON.stringify(collection))
       console.log('-------------------------------- ФИНИШ ---------------------------');
 
+      loadBalances();
       history.push(variableHistory);
       variableHistory = {};
     }

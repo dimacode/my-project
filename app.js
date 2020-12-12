@@ -46,20 +46,7 @@ app.listen(4002, () => {
 
   
 
-  const startScript = () => {
-    variableHistory.a0 = 1;
-    // let data = fs.readFileSync('history.json');
-    // let collection = JSON.parse(data);
-    // collection.push(variableHistory);
-    // fs.writeFileSync('history.json', JSON.stringify(collection))
-    setInterval(() => {
-      variableHistory.a1 = 1;
-      checkBalance();
-    }, 1000);
-  };
-
-  startScript();
-
+  
   const checkBalance = () => {
     variableHistory.a2 = 2;
     const { TRX, BTC } = currency;
@@ -81,6 +68,21 @@ app.listen(4002, () => {
     fs.writeFileSync('history.json', JSON.stringify(collection))
     // variableHistory = {};
   };
+
+  const startScript = () => {
+    variableHistory.a0 = 1;
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
+    setInterval(() => {
+      variableHistory.a1 = 1;
+      checkBalance();
+    }, 1000);
+  };
+
+  startScript();
+
 
   const loadBalances = () => 
     getAccountData(ACCESS_KEY, SECRET_KEY, {}).then(account=>{

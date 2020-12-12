@@ -47,23 +47,42 @@ app.listen(4002, () => {
   
 
   const startScript = () => {
+
     setInterval(() => {
-      checkBalance();
-    }, 60000);
+      let day = new Date().getDate();
+      let hours = new Date().getHours();
+      let minutes = new Date().getMinutes();
+      let seconds = new Date().getSeconds();
+      if (hours == 0 && minutes == 0) {
+        variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
+        checkTime();
+      }
+    }, 30000);
+    
   };
 
   startScript();
 
-  const checkBalance = () => {
-    const { TRX, BTC } = currency;
-    if (TRX.balance === '' && BTC.balance === '') {
-      loadBalances().then(() => {
-        variableHistory.loadFirstBalance = true;
-        getPrice();
-      });
-    } else {
-      getPrice();
-    }
+  const checkTime = () => {
+    // let hours = new Date().getHours();
+    // let minutes = new Date().getMinutes();
+    // console.log('START SCRIPT 1')
+    // if (hours === 0 && minutes === 0) {
+      getServerTime().then(time => {
+        // console.log('h / m', hours, ' : ', minutes);
+        const dayExc = new Date().getDate();
+        const hoursExc = new Date(time).getHours();
+        const minutesExc = new Date(time).getMinutes();
+        const secondsExc = new Date(time).getSeconds();
+        // console.log('hoursExc', hoursExc+':'+minutesExc);
+        // if (hoursExc === 0 && minutesExc === 0) {
+          loadBalances().then(() => {
+            variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
+            getPrice();
+          });
+        // }
+      })
+    // }
   };
 
   const loadBalances = () => 
@@ -120,6 +139,7 @@ app.listen(4002, () => {
     const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
     const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
+    // variableHistory.initialPrice = currentPair.initialPrice;
     variableHistory.A_0_pairs = {...pairs};
     variableHistory.A_1_lastPrices = lastPrices;
     variableHistory.A_2_currentPair = {...currentPair};
@@ -128,74 +148,125 @@ app.listen(4002, () => {
 
     variableHistory.A_5_minPricePositiv = minPricePositiv;
     variableHistory.A_6_minPriceNegativ = minPriceNegativ;
+    
+    const currentSide = currentPair.currentSide;
 
-    const isNewPricePositive = newPrice >= minPricePositiv;
-    const isNewPriceNegative = newPrice <= minPriceNegativ;
-    variableHistory.B_1_isNewPricePositive = isNewPricePositive;
-    variableHistory.B_2_isNewPriceNegative = isNewPriceNegative;
-
-    if (isNewPricePositive || isNewPriceNegative) {
+    if (newPrice >= minPricePositiv) {
+      // BUY
       pairs[symbol].orderHistoryPrice.push(newPrice);
-      variableHistory.C_1_pairsAfterPush = [...pairs[symbol].orderHistoryPrice];
 
-      preparingOrder(symbol, isNewPricePositive ? 'sell' : 'buy', newPrice);
-      return;
+      // variableHistory.B_1_currentPairAfterPush = {...currentPair};
+      variableHistory.B_2_pairsAfterPush = {...pairs};
+
+      if (currentSide !== "buy") {
+        pairs[symbol].currentSide = "buy";
+        
+        variableHistory.C_1_newPrice = newPrice;
+        variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv;
+        variableHistory.C_3_currentSide = "buy";
+        variableHistory.C_4_minPricePositiv = minPricePositiv;
+        variableHistory.C_5_minPriceNegativ = minPriceNegativ;
+
+        // variableHistory.C_6_currentPairAfterPush = {...currentPair};
+        variableHistory.C_7_pairsAfterPush = {...pairs};
+
+        preparingOrder(symbol, 'buy', newPrice);
+        // break;
+      } else {
+
+        variableHistory.B_3_pushedNewMaxPrice = 'ADD NEW MAX PRICE';
+
+        let data = fs.readFileSync('history.json');
+        let collection = JSON.parse(data);
+        collection.push(variableHistory);
+        fs.writeFileSync('history.json', JSON.stringify(collection))
+        variableHistory = {};
+      }
+      
+    } else if (newPrice <= minPriceNegativ) {
+      // SELL
+      pairs[symbol].orderHistoryPrice.push(newPrice);
+
+      // variableHistory.B_1_currentPairAfterPush = {...currentPair};
+      variableHistory.B_2_pairsAfterPush = {...pairs};
+
+      if (currentSide !== "sell") {
+        pairs[symbol].currentSide = 'sell';
+
+        variableHistory.C_1_newPrice = newPrice;
+        variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice <= minPriceNegativ;
+        variableHistory.C_3_currentSide = "sell";
+        variableHistory.C_4_minPricePositiv = minPricePositiv;
+        variableHistory.C_5_minPriceNegativ = minPriceNegativ;
+
+        // variableHistory.C_6_currentPairAfterPush = {...currentPair};
+        variableHistory.C_7_pairsAfterPush = {...pairs};
+
+        preparingOrder(symbol, 'sell', newPrice);
+
+      } else {
+
+        variableHistory.B_3_pushedNewMinPrice = 'ADD NEW MIN PRICE';
+
+        let data = fs.readFileSync('history.json');
+        let collection = JSON.parse(data);
+        collection.push(variableHistory);
+        fs.writeFileSync('history.json', JSON.stringify(collection))
+        variableHistory = {};
+      }
+
+    } else {
+
+      variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
+      variableHistory.A_8_currentSide = pairs[symbol].currentSide;
+      variableHistory.A_9_newPrice = newPrice;
+      variableHistory.A_10_minPricePositiv = minPricePositiv;
+      variableHistory.A_11_minPriceNegativ = minPriceNegativ;
+
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
+      variableHistory = {};
     }
 
-    variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
-    // variableHistory.A_8_currentSide = pairs[symbol].currentSide;
-    variableHistory.A_9_newPrice = newPrice;
-    variableHistory.A_10_minPricePositiv = minPricePositiv;
-    variableHistory.A_11_minPriceNegativ = minPriceNegativ;
-
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
-    variableHistory = {};
   };
 
   const preparingOrder = (symbol, side, newPrice) => {
-    variableHistory.D_0_preparingOrder = symbol+' | '+side+' | '+newPrice;
-    const TRX = pairs[symbol].base;
-    const BTC = pairs[symbol].qoute;
-    const whatCrypto = side === 'sell' ? TRX : BTC; // TRX or BTC
+
+    const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
     const precision = pairs[symbol].precision[whatCrypto]; // 8
     const pair = pairs[symbol].pair; // TRXBTC
-    let summForSell = 0;
+    let balance = currency[whatCrypto].balance;
     
     variableHistory.D_1_whatCrypto = whatCrypto;
     variableHistory.D_2_precision = precision;
     variableHistory.D_3_pair = pair;
+    variableHistory.D_4_balance = balance;
 
-    if (side === 'sell') {
-      const btcToTrx = Math.trunc(currency[BTC].balance / newPrice);
-      const btcPlusTrx = Math.trunc(btcToTrx + currency[TRX].balance);
-      const halfOfTrx = btcPlusTrx / 2;
-      summForSell = currency[TRX].balance - halfOfTrx;
-
-      variableHistory.D_4_btcToTrx = btcToTrx;
-      variableHistory.D_4_btcPlusTrx = btcPlusTrx;
-      variableHistory.D_4_halfOfTrx = halfOfTrx;
-      variableHistory.D_4_summForSell = summForSell;
-    }
     if (side === 'buy') {
-      const trxToBtc = currency[TRX].balance * newPrice;
-      const trxPlusBtc = trxToBtc + currency[BTC].balance;
-      const halfOfBtc = trxPlusBtc / 2;
-      summForSell = currency[BTC].balance - halfOfBtc;
-
-      variableHistory.D_4_trxToBtc = trxToBtc;
-      variableHistory.D_4_trxPlusBtc = trxPlusBtc;
-      variableHistory.D_4_halfOfBtc = halfOfBtc;
-      variableHistory.D_4_summForSell = summForSell;
+      balance = balance / newPrice; // BTC convert to TRX
+      // console.log('ВТС конвертирован в TRX = ', balance);
+      variableHistory.D_5_btcConverted = balance;
+    }
+    if (side === 'sell') {
+      // balance -= stableBalance; // TRX minus stable balance
+      // console.log('TRX = ', balance);
+      variableHistory.D_5_trxConverted = balance;
     }
 
+    // console.log('balance', balance);
     console.log('============== 1 ОРДЕР ===============')
 
-    const quantityWithCommision = summForSell - (summForSell / commision);
+    const quantityWithCommision = balance - (balance / commision);
     let quantityWithPrecision = quantityWithCommision.toFixed(precision);
 
+    // if (side === 'buy') {
+    //   quantityWithPrecision = quantityWithCommision.toFixed();
+    // }
+
+    // console.log('Баланс с комисией', quantityWithCommision)
+    // console.log('Сумма сделки обрезанна', quantityWithPrecision);
     variableHistory.D_6_quantityWithCommision = quantityWithCommision;
     variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
@@ -222,6 +293,7 @@ app.listen(4002, () => {
     })
     .then(res => {
       variableHistory.sendOrderThenRes = res;
+      addLogToHistory();
       // loadBalances().then(() => {
       //   variableHistory.sendOrderSUCCESS = true;
       //   console.log('Обновляем балансы')

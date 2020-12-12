@@ -48,10 +48,10 @@ app.listen(4002, () => {
 
   const startScript = () => {
     variableHistory.a0 = 1;
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
     setInterval(() => {
       variableHistory.a1 = 1;
       checkBalance();

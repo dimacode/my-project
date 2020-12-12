@@ -53,7 +53,7 @@ app.listen(4002, () => {
     setInterval(() => {
       variableHistory.a1 = 1;
       checkBalance();
-    }, 1000);
+    }, 10000);
   };
 
   startScript();
@@ -68,17 +68,17 @@ app.listen(4002, () => {
       loadBalances().then(() => {
         variableHistory.a4 = 4;
         variableHistory.loadFirstBalance = true;
-        // getPrice();
+        getPrice();
       });
     } else {
       variableHistory.a5 = 5;
-      // getPrice();
+      getPrice();
     }
 
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
 
     
     // variableHistory = {};

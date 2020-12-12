@@ -48,6 +48,7 @@ app.listen(4002, () => {
 
   const startScript = () => {
     setInterval(() => {
+      variableHistory.a1 = 1;
       checkBalance();
     }, 10000);
   };
@@ -55,15 +56,25 @@ app.listen(4002, () => {
   startScript();
 
   const checkBalance = () => {
+    variableHistory.a2 = 2;
     const { TRX, BTC } = currency;
     if (TRX.balance === '' && BTC.balance === '') {
+      variableHistory.a3 = 3;
       loadBalances().then(() => {
+        variableHistory.a4 = 4;
         variableHistory.loadFirstBalance = true;
-        getPrice();
+        // getPrice();
       });
     } else {
-      getPrice();
+      variableHistory.a5 = 5;
+      // getPrice();
     }
+
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
+    variableHistory = {};
   };
 
   const loadBalances = () => 
@@ -113,8 +124,7 @@ app.listen(4002, () => {
   };
 
   const checkPrice = (lastPrices) => {
-    // let i = 0;
-    // while (i < lastPrices.length) {
+
     const symbol = lastPrices[0].symbol; // "TRXBTC"
     const currentPair = pairs[symbol]; // TRXBTC {}
     const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;

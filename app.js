@@ -135,8 +135,8 @@ app.listen(4002, () => {
     const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
     const newPrice = lastPrices[0].price; // 0.12345678
 
-    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
-    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
+    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
+    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
 
     variableHistory.A_0_pairs = {...pairs};
     variableHistory.A_1_lastPrices = lastPrices;
@@ -165,11 +165,11 @@ app.listen(4002, () => {
     // variableHistory.A_10_minPricePositiv = minPricePositiv;
     // variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
-    variableHistory = {};
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
+    // variableHistory = {};
   };
 
   const preparingOrder = (symbol, side, newPrice) => {

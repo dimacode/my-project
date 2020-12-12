@@ -65,11 +65,11 @@ app.listen(4002, () => {
     
     if (TRX.balance === '' && BTC.balance === '') {
       variableHistory.a3 = 3;
-      // loadBalances().then(() => {
-      //   variableHistory.a4 = 4;
-      //   variableHistory.loadFirstBalance = true;
-      //   // getPrice();
-      // });
+      loadBalances().then(() => {
+        variableHistory.a4 = 4;
+        variableHistory.loadFirstBalance = true;
+        // getPrice();
+      });
     } else {
       variableHistory.a5 = 5;
       // getPrice();
@@ -106,9 +106,6 @@ app.listen(4002, () => {
     })
     .catch(err => {
       variableHistory.loadBalancesFAILS = err;
-    })
-    .finally(() => {
-      variableHistory.loadBalances = true;
     })
 
   const getPrice = () => {

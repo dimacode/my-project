@@ -148,7 +148,7 @@ app.listen(4002, () => {
       pairs[symbol].orderHistoryPrice.push(newPrice);
       variableHistory.C_1_pairsAfterPush = [...pairs[symbol].orderHistoryPrice];
 
-      preparingOrder(symbol, isNewPricePositive ? 'sell' : 'buy', newPrice);
+      preparingOrder(symbol, isNewPricePositive ? 'sell' : 'buy', newPrice, lastOrderPrice);
       return;
     }
 
@@ -180,58 +180,101 @@ app.listen(4002, () => {
     variableHistory.D_5_currency = currency;
 
     if (side === 'sell') {
-      const btcToTrx = Math.trunc(balanceBTC / priceForm);
-      const btcPlusTrx = Math.trunc(btcToTrx + balanceTRX);
-      const halfOfTrx = btcPlusTrx / 2;
-      summForSell = balanceTRX - halfOfTrx;
+      const a = newPrice - lastOrderPrice; // 151 - 150 = 1
+      const b = a / newPrice * 100; // 0.66 % от 150
+      summForSell = Math.trunc(balanceTRX * b / 100); // 1195.8078 от баланса trx
 
-      variableHistory.D_TEST_1 = balanceBTC;
-      variableHistory.D_TEST_2 = priceForm;
-      variableHistory.D_TEST_3 = balanceBTC / priceForm;
-      variableHistory.D_TEST_4 = Math.trunc(balanceBTC / priceForm);
-      variableHistory.D_TEST_5 = btcToTrx;
-      variableHistory.D_TEST_6 = balanceTRX;
-      variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
-      variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
-      variableHistory.D_TEST_9 = btcPlusTrx;
-      variableHistory.D_TEST_10 = btcPlusTrx / 2;
-      variableHistory.D_TEST_11 = balanceTRX;
-      variableHistory.D_TEST_12 = halfOfTrx;
-      variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
-      variableHistory.D_TEST_14 = summForSell; 
-
-
-      variableHistory.D_4_btcToTrx = btcToTrx;
-      variableHistory.D_4_btcPlusTrx = btcPlusTrx;
-      variableHistory.D_4_halfOfTrx = halfOfTrx;
-      variableHistory.D_4_summForSell = summForSell;
+      variableHistory.D_TEST_1 = newPrice; 
+      variableHistory.D_TEST_2 = lastOrderPrice;
+      variableHistory.D_TEST_3 = newPrice - lastOrderPrice;
+      variableHistory.D_TEST_4 = a;
+      variableHistory.D_TEST_5 = newPrice;
+      variableHistory.D_TEST_6 = a / newPrice * 100;
+      // variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
+      variableHistory.D_TEST_8 = balanceTRX;
+      variableHistory.D_TEST_9 = b;
+      variableHistory.D_TEST_10 = balanceTRX * b / 100;
+      variableHistory.D_TEST_11 = Math.trunc(balanceTRX * b / 100);
+//   variableHistory.D_TEST_12 = halfOfTrx;
+//   variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
+//   variableHistory.D_TEST_14 = summForSell;
     }
+
     if (side === 'buy') {
-      const trxToBtc = Number((balanceTRX * priceForm).toFixed(8));
-      const trxPlusBtc = Number(trxToBtc) + balanceBTC;
-      const halfOfBtc = trxPlusBtc / 2;
-      summForSell = (balanceBTC - halfOfBtc) / priceForm;
+      const a = lastOrderPrice - newPrice; // 151 - 150 = 1
+      const b = a / lastOrderPrice * 100; // 0.66 % от 150
+      const c = balanceBTC * b / 100; // 0.001815750024 от баланса btc
+      summForSell = Math.trunc(c / newPrice);
 
-      variableHistory.D_TEST_1 = balanceTRX;
-      variableHistory.D_TEST_2 = priceForm;
-      variableHistory.D_TEST_3 = balanceBTC * priceForm;
-      variableHistory.D_TEST_4 = Number((balanceTRX * priceForm).toFixed(8));
-      variableHistory.D_TEST_5 = Number(trxToBtc);
-      variableHistory.D_TEST_6 = balanceBTC;
-      variableHistory.D_TEST_7 = Number(trxToBtc) + balanceBTC;
-      // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
-      variableHistory.D_TEST_9 = trxPlusBtc;
-      variableHistory.D_TEST_10 = trxPlusBtc / 2;
-      variableHistory.D_TEST_11 = balanceBTC;
-      variableHistory.D_TEST_12 = halfOfBtc;
-      variableHistory.D_TEST_13 = (balanceBTC - halfOfBtc) / priceForm;
-      variableHistory.D_TEST_14 = summForSell;
-
-      variableHistory.D_4_trxToBtc = trxToBtc;
-      variableHistory.D_4_trxPlusBtc = trxPlusBtc;
-      variableHistory.D_4_halfOfBtc = halfOfBtc;
-      variableHistory.D_4_summForSell = summForSell;
+      variableHistory.D_TEST_1 = lastOrderPrice; 
+      variableHistory.D_TEST_2 = newPrice;
+      variableHistory.D_TEST_3 = lastOrderPrice - newPrice;
+      variableHistory.D_TEST_4 = a;
+      variableHistory.D_TEST_5 = lastOrderPrice;
+      variableHistory.D_TEST_6 = a / lastOrderPrice * 100;
+      // variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
+      variableHistory.D_TEST_8 = balanceBTC;
+      variableHistory.D_TEST_9 = b;
+      variableHistory.D_TEST_10 = balanceBTC * b / 100;
+      variableHistory.D_TEST_11 = c / newPrice;
+      variableHistory.D_TEST_12 = Math.trunc(c / newPrice);
+//   variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
+//   variableHistory.D_TEST_14 = summForSell;
     }
+
+    // if (side === 'sell') {
+    //   const btcToTrx = Math.trunc(balanceBTC / priceForm);
+    //   const btcPlusTrx = Math.trunc(btcToTrx + balanceTRX);
+    //   const halfOfTrx = btcPlusTrx / 2;
+    //   summForSell = balanceTRX - halfOfTrx;
+
+    //   variableHistory.D_TEST_1 = balanceBTC;
+    //   variableHistory.D_TEST_2 = priceForm;
+    //   variableHistory.D_TEST_3 = balanceBTC / priceForm;
+    //   variableHistory.D_TEST_4 = Math.trunc(balanceBTC / priceForm);
+    //   variableHistory.D_TEST_5 = btcToTrx;
+    //   variableHistory.D_TEST_6 = balanceTRX;
+    //   variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
+    //   variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
+    //   variableHistory.D_TEST_9 = btcPlusTrx;
+    //   variableHistory.D_TEST_10 = btcPlusTrx / 2;
+    //   variableHistory.D_TEST_11 = balanceTRX;
+    //   variableHistory.D_TEST_12 = halfOfTrx;
+    //   variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
+    //   variableHistory.D_TEST_14 = summForSell; 
+
+
+    //   variableHistory.D_4_btcToTrx = btcToTrx;
+    //   variableHistory.D_4_btcPlusTrx = btcPlusTrx;
+    //   variableHistory.D_4_halfOfTrx = halfOfTrx;
+    //   variableHistory.D_4_summForSell = summForSell;
+    // }
+    // if (side === 'buy') {
+    //   const trxToBtc = Number((balanceTRX * priceForm).toFixed(8));
+    //   const trxPlusBtc = Number(trxToBtc) + balanceBTC;
+    //   const halfOfBtc = trxPlusBtc / 2;
+    //   summForSell = (balanceBTC - halfOfBtc) / priceForm;
+
+    //   variableHistory.D_TEST_1 = balanceTRX;
+    //   variableHistory.D_TEST_2 = priceForm;
+    //   variableHistory.D_TEST_3 = balanceBTC * priceForm;
+    //   variableHistory.D_TEST_4 = Number((balanceTRX * priceForm).toFixed(8));
+    //   variableHistory.D_TEST_5 = Number(trxToBtc);
+    //   variableHistory.D_TEST_6 = balanceBTC;
+    //   variableHistory.D_TEST_7 = Number(trxToBtc) + balanceBTC;
+    //   // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
+    //   variableHistory.D_TEST_9 = trxPlusBtc;
+    //   variableHistory.D_TEST_10 = trxPlusBtc / 2;
+    //   variableHistory.D_TEST_11 = balanceBTC;
+    //   variableHistory.D_TEST_12 = halfOfBtc;
+    //   variableHistory.D_TEST_13 = (balanceBTC - halfOfBtc) / priceForm;
+    //   variableHistory.D_TEST_14 = summForSell;
+
+    //   variableHistory.D_4_trxToBtc = trxToBtc;
+    //   variableHistory.D_4_trxPlusBtc = trxPlusBtc;
+    //   variableHistory.D_4_halfOfBtc = halfOfBtc;
+    //   variableHistory.D_4_summForSell = summForSell;
+    // }
 
     console.log('============== 1 ОРДЕР ===============')
 

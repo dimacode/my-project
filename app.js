@@ -45,13 +45,11 @@ app.listen(4002, () => {
   };
 
   const startScript = () => {
-    variableHistory.a0 = 1;
     // let data = fs.readFileSync('history.json');
     // let collection = JSON.parse(data);
     // collection.push(variableHistory);
     // fs.writeFileSync('history.json', JSON.stringify(collection))
     setInterval(() => {
-      variableHistory.a1 = 1;
       checkBalance();
     }, 10000);
   };
@@ -59,19 +57,13 @@ app.listen(4002, () => {
   startScript();
 
   const checkBalance = () => {
-    variableHistory.a2 = 2;
     const { TRX, BTC } = currency;
-    
-    
     if (TRX.balance === '' && BTC.balance === '') {
-      variableHistory.a3 = 3;
       loadBalances().then(() => {
-        variableHistory.a4 = 4;
         variableHistory.loadFirstBalance = true;
         getPrice();
       });
     } else {
-      variableHistory.a5 = 5;
       getPrice();
     }
 
@@ -218,7 +210,7 @@ app.listen(4002, () => {
       const trxToBtc = Number((balanceTRX * priceForm).toFixed(8));
       const trxPlusBtc = Number(trxToBtc) + balanceBTC;
       const halfOfBtc = trxPlusBtc / 2;
-      summForSell = balanceBTC - halfOfBtc;
+      summForSell = (balanceBTC - halfOfBtc) / priceForm ;
 
       variableHistory.D_TEST_1 = balanceTRX;
       variableHistory.D_TEST_2 = priceForm;
@@ -233,7 +225,7 @@ app.listen(4002, () => {
       variableHistory.D_TEST_11 = balanceBTC;
       variableHistory.D_TEST_12 = halfOfBtc;
       variableHistory.D_TEST_13 = balanceBTC - halfOfBtc;
-      variableHistory.D_TEST_13 = summForSell;
+      variableHistory.D_TEST_14 = summForSell;
 
       variableHistory.D_4_trxToBtc = trxToBtc;
       variableHistory.D_4_trxPlusBtc = trxPlusBtc;

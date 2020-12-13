@@ -177,7 +177,10 @@ app.listen(4002, () => {
     const precision = pairs[symbol].precision[whatCrypto]; // 8
     const pair = pairs[symbol].pair; // TRXBTC
     let summForSell = 0;
-    
+
+    const balanceTRX = Math.trunc(+currency[TRX].balance);
+    const balanceBTC = +currency[BTC].balance;
+    const priceForm = +newPrice;
 
     variableHistory.D_1_whatCrypto = whatCrypto;
     variableHistory.D_2_precision = precision;
@@ -185,24 +188,24 @@ app.listen(4002, () => {
     variableHistory.D_5_currency = currency;
 
     if (side === 'sell') {
-      const btcToTrx = Math.trunc(currency[BTC].balance / newPrice);
-      const btcPlusTrx = Math.trunc(btcToTrx + currency[TRX].balance);
+      const btcToTrx = Math.trunc(balanceBTC / priceForm);
+      const btcPlusTrx = Math.trunc(btcToTrx + balanceTRX);
       const halfOfTrx = btcPlusTrx / 2;
-      summForSell = currency[TRX].balance - halfOfTrx;
+      summForSell = balanceTRX - halfOfTrx;
 
-      variableHistory.D_TEST_1 = currency[BTC].balance;
-      variableHistory.D_TEST_2 = newPrice;
-      variableHistory.D_TEST_3 = currency[BTC].balance / newPrice;
-      variableHistory.D_TEST_4 = Math.trunc(currency[BTC].balance / newPrice);
+      variableHistory.D_TEST_1 = balanceBTC;
+      variableHistory.D_TEST_2 = priceForm;
+      variableHistory.D_TEST_3 = balanceBTC / priceForm;
+      variableHistory.D_TEST_4 = Math.trunc(balanceBTC / priceForm);
       variableHistory.D_TEST_5 = btcToTrx;
-      variableHistory.D_TEST_6 = currency[TRX].balance;
-      variableHistory.D_TEST_7 = btcToTrx + currency[TRX].balance;
-      variableHistory.D_TEST_8 = Math.trunc(btcToTrx + currency[TRX].balance);
+      variableHistory.D_TEST_6 = balanceTRX;
+      variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
+      variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
       variableHistory.D_TEST_9 = btcPlusTrx;
       variableHistory.D_TEST_10 = btcPlusTrx / 2;
-      variableHistory.D_TEST_11 = currency[TRX].balance;
+      variableHistory.D_TEST_11 = balanceTRX;
       variableHistory.D_TEST_12 = halfOfTrx;
-      variableHistory.D_TEST_13 = currency[TRX].balance - halfOfTrx; 
+      variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
       variableHistory.D_TEST_14 = summForSell; 
 
 
@@ -212,24 +215,24 @@ app.listen(4002, () => {
       variableHistory.D_4_summForSell = summForSell;
     }
     if (side === 'buy') {
-      const trxToBtc = (currency[TRX].balance * newPrice).toFixed(8);
-      const trxPlusBtc = trxToBtc + currency[BTC].balance;
+      const trxToBtc = (balanceTRX * priceForm).toFixed(8);
+      const trxPlusBtc = trxToBtc + balanceBTC;
       const halfOfBtc = trxPlusBtc / 2;
-      summForSell = currency[BTC].balance - halfOfBtc;
+      summForSell = balanceBTC - halfOfBtc;
 
-      variableHistory.D_TEST_1 = currency[TRX].balance;
-      variableHistory.D_TEST_2 = newPrice;
-      variableHistory.D_TEST_3 = currency[BTC].balance * newPrice;
-      variableHistory.D_TEST_4 = (currency[TRX].balance * newPrice).toFixed(8);
+      variableHistory.D_TEST_1 = balanceTRX;
+      variableHistory.D_TEST_2 = priceForm;
+      variableHistory.D_TEST_3 = balanceBTC * priceForm;
+      variableHistory.D_TEST_4 = (balanceTRX * priceForm).toFixed(8);
       variableHistory.D_TEST_5 = trxToBtc;
-      variableHistory.D_TEST_6 = currency[BTC].balance;
-      variableHistory.D_TEST_7 = trxToBtc + currency[BTC].balance;
-      // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + currency[TRX].balance);
+      variableHistory.D_TEST_6 = balanceBTC;
+      variableHistory.D_TEST_7 = trxToBtc + balanceBTC;
+      // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
       variableHistory.D_TEST_9 = trxPlusBtc;
       variableHistory.D_TEST_10 = trxPlusBtc / 2;
-      variableHistory.D_TEST_11 = currency[BTC].balance;
+      variableHistory.D_TEST_11 = balanceBTC;
       variableHistory.D_TEST_12 = halfOfBtc;
-      variableHistory.D_TEST_13 = currency[BTC].balance - halfOfBtc;
+      variableHistory.D_TEST_13 = balanceBTC - halfOfBtc;
       variableHistory.D_TEST_13 = summForSell;
 
       variableHistory.D_4_trxToBtc = trxToBtc;

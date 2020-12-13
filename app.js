@@ -216,7 +216,7 @@ app.listen(4002, () => {
     }
     if (side === 'buy') {
       const trxToBtc = Number((balanceTRX * priceForm).toFixed(8));
-      const trxPlusBtc = trxToBtc + balanceBTC;
+      const trxPlusBtc = Number(trxToBtc) + balanceBTC;
       const halfOfBtc = trxPlusBtc / 2;
       summForSell = balanceBTC - halfOfBtc;
 
@@ -224,9 +224,9 @@ app.listen(4002, () => {
       variableHistory.D_TEST_2 = priceForm;
       variableHistory.D_TEST_3 = balanceBTC * priceForm;
       variableHistory.D_TEST_4 = Number((balanceTRX * priceForm).toFixed(8));
-      variableHistory.D_TEST_5 = trxToBtc;
+      variableHistory.D_TEST_5 = Number(trxToBtc);
       variableHistory.D_TEST_6 = balanceBTC;
-      variableHistory.D_TEST_7 = trxToBtc + balanceBTC;
+      variableHistory.D_TEST_7 = Number(trxToBtc) + balanceBTC;
       // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + balanceTRX);
       variableHistory.D_TEST_9 = trxPlusBtc;
       variableHistory.D_TEST_10 = trxPlusBtc / 2;

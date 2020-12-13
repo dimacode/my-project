@@ -173,6 +173,7 @@ app.listen(4002, () => {
     const balanceTRX = Math.trunc(+currency[TRX].balance);
     const balanceBTC = +currency[BTC].balance;
     const priceForm = +newPrice;
+    const lastPriceForm = +lastOrderPrice;
 
     variableHistory.D_1_whatCrypto = whatCrypto;
     variableHistory.D_2_precision = precision;
@@ -180,13 +181,13 @@ app.listen(4002, () => {
     variableHistory.D_5_currency = currency;
 
     if (side === 'sell') {
-      const a = priceForm - lastOrderPrice; // 151 - 150 = 1
+      const a = priceForm - lastPriceForm; // 151 - 150 = 1
       const b = a / priceForm * 100; // 0.66 % от 150
       summForSell = Math.trunc(balanceTRX * b / 100); // 1195.8078 от баланса trx
 
       variableHistory.D_TEST_1 = priceForm; 
-      variableHistory.D_TEST_2 = lastOrderPrice;
-      variableHistory.D_TEST_3 = priceForm - lastOrderPrice;
+      variableHistory.D_TEST_2 = lastPriceForm;
+      variableHistory.D_TEST_3 = priceForm - lastPriceForm;
       variableHistory.D_TEST_4 = a;
       variableHistory.D_TEST_5 = priceForm;
       variableHistory.D_TEST_6 = a / priceForm * 100;
@@ -201,17 +202,17 @@ app.listen(4002, () => {
     }
 
     if (side === 'buy') {
-      const a = lastOrderPrice - priceForm; // 151 - 150 = 1
-      const b = a / lastOrderPrice * 100; // 0.66 % от 150
+      const a = lastPriceForm - priceForm; // 151 - 150 = 1
+      const b = a / lastPriceForm * 100; // 0.66 % от 150
       const c = balanceBTC * b / 100; // 0.001815750024 от баланса btc
       summForSell = Math.trunc(c / priceForm);
 
-      variableHistory.D_TEST_1 = lastOrderPrice; 
+      variableHistory.D_TEST_1 = lastPriceForm; 
       variableHistory.D_TEST_2 = priceForm;
-      variableHistory.D_TEST_3 = lastOrderPrice - priceForm;
+      variableHistory.D_TEST_3 = lastPriceForm - priceForm;
       variableHistory.D_TEST_4 = a;
-      variableHistory.D_TEST_5 = lastOrderPrice;
-      variableHistory.D_TEST_6 = a / lastOrderPrice * 100;
+      variableHistory.D_TEST_5 = lastPriceForm;
+      variableHistory.D_TEST_6 = a / lastPriceForm * 100;
       // variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
       variableHistory.D_TEST_8 = balanceBTC;
       variableHistory.D_TEST_9 = b;

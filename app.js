@@ -161,9 +161,6 @@ app.listen(4002, () => {
     }
 
     variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
-    variableHistory.A_9_newPrice = newPrice;
-    variableHistory.A_10_minPricePositiv = minPricePositiv;
-    variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
     let data = fs.readFileSync('history.json');
     let collection = JSON.parse(data);
@@ -181,9 +178,11 @@ app.listen(4002, () => {
     const pair = pairs[symbol].pair; // TRXBTC
     let summForSell = 0;
     
+
     variableHistory.D_1_whatCrypto = whatCrypto;
     variableHistory.D_2_precision = precision;
     variableHistory.D_3_pair = pair;
+    variableHistory.D_5_currency = currency;
 
     if (side === 'sell') {
       const btcToTrx = Math.trunc(currency[BTC].balance / newPrice);
@@ -191,16 +190,47 @@ app.listen(4002, () => {
       const halfOfTrx = btcPlusTrx / 2;
       summForSell = currency[TRX].balance - halfOfTrx;
 
+      variableHistory.D_TEST_1 = currency[BTC].balance;
+      variableHistory.D_TEST_2 = newPrice;
+      variableHistory.D_TEST_3 = currency[BTC].balance / newPrice;
+      variableHistory.D_TEST_4 = Math.trunc(currency[BTC].balance / newPrice);
+      variableHistory.D_TEST_5 = btcToTrx;
+      variableHistory.D_TEST_6 = currency[TRX].balance;
+      variableHistory.D_TEST_7 = btcToTrx + currency[TRX].balance;
+      variableHistory.D_TEST_8 = Math.trunc(btcToTrx + currency[TRX].balance);
+      variableHistory.D_TEST_9 = btcPlusTrx;
+      variableHistory.D_TEST_10 = btcPlusTrx / 2;
+      variableHistory.D_TEST_11 = currency[TRX].balance;
+      variableHistory.D_TEST_12 = halfOfTrx;
+      variableHistory.D_TEST_13 = currency[TRX].balance - halfOfTrx; 
+      variableHistory.D_TEST_14 = summForSell; 
+
+
       variableHistory.D_4_btcToTrx = btcToTrx;
       variableHistory.D_4_btcPlusTrx = btcPlusTrx;
       variableHistory.D_4_halfOfTrx = halfOfTrx;
       variableHistory.D_4_summForSell = summForSell;
     }
     if (side === 'buy') {
-      const trxToBtc = currency[TRX].balance * newPrice;
+      const trxToBtc = (currency[TRX].balance * newPrice).toFixed(8);
       const trxPlusBtc = trxToBtc + currency[BTC].balance;
       const halfOfBtc = trxPlusBtc / 2;
       summForSell = currency[BTC].balance - halfOfBtc;
+
+      variableHistory.D_TEST_1 = currency[TRX].balance;
+      variableHistory.D_TEST_2 = newPrice;
+      variableHistory.D_TEST_3 = currency[BTC].balance * newPrice;
+      variableHistory.D_TEST_4 = (currency[TRX].balance * newPrice).toFixed(8);
+      variableHistory.D_TEST_5 = trxToBtc;
+      variableHistory.D_TEST_6 = currency[BTC].balance;
+      variableHistory.D_TEST_7 = trxToBtc + currency[BTC].balance;
+      // variableHistory.D_TEST_8 = Math.trunc(btcToTrx + currency[TRX].balance);
+      variableHistory.D_TEST_9 = trxPlusBtc;
+      variableHistory.D_TEST_10 = trxPlusBtc / 2;
+      variableHistory.D_TEST_11 = currency[BTC].balance;
+      variableHistory.D_TEST_12 = halfOfBtc;
+      variableHistory.D_TEST_13 = currency[BTC].balance - halfOfBtc;
+      variableHistory.D_TEST_13 = summForSell;
 
       variableHistory.D_4_trxToBtc = trxToBtc;
       variableHistory.D_4_trxPlusBtc = trxPlusBtc;
@@ -226,9 +256,14 @@ app.listen(4002, () => {
       fs.writeFileSync('history.json', JSON.stringify(collection))
       console.log('-------------------------------- ФИНИШ ---------------------------');
 
-      loadBalances();
-      history.push(variableHistory);
-      variableHistory = {};
+      loadBalances().then(() => {
+        history.push(variableHistory);
+        variableHistory = {};
+      })
+      .catch(err => {
+        history.push(variableHistory);
+        variableHistory = {};
+      });
     }
 
     
@@ -240,6 +275,7 @@ app.listen(4002, () => {
     })
     .then(res => {
       variableHistory.sendOrderThenRes = res;
+      addLogToHistory();
       // loadBalances().then(() => {
       //   variableHistory.sendOrderSUCCESS = true;
       //   console.log('Обновляем балансы')
@@ -250,8 +286,6 @@ app.listen(4002, () => {
     })
     .catch(err => {
       variableHistory.sendOrderERROR = err;
-    })
-    .finally(() => {
       addLogToHistory();
     })
   };

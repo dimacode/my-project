@@ -160,16 +160,16 @@ app.listen(4002, () => {
       return;
     }
 
-    // variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
-    // variableHistory.A_9_newPrice = newPrice;
-    // variableHistory.A_10_minPricePositiv = minPricePositiv;
-    // variableHistory.A_11_minPriceNegativ = minPriceNegativ;
+    variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
+    variableHistory.A_9_newPrice = newPrice;
+    variableHistory.A_10_minPricePositiv = minPricePositiv;
+    variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
-    // let data = fs.readFileSync('history.json');
-    // let collection = JSON.parse(data);
-    // collection.push(variableHistory);
-    // fs.writeFileSync('history.json', JSON.stringify(collection))
-    // variableHistory = {};
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
+    variableHistory = {};
   };
 
   const preparingOrder = (symbol, side, newPrice) => {

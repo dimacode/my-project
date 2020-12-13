@@ -161,7 +161,7 @@ app.listen(4002, () => {
     variableHistory = {};
   };
 
-  const preparingOrder = (symbol, side, newPrice) => {
+  const preparingOrder = (symbol, side, newPrice, lastOrderPrice) => {
     variableHistory.D_0_preparingOrder = symbol+' | '+side+' | '+newPrice;
     const TRX = pairs[symbol].base;
     const BTC = pairs[symbol].qoute;
@@ -180,16 +180,16 @@ app.listen(4002, () => {
     variableHistory.D_5_currency = currency;
 
     if (side === 'sell') {
-      const a = newPrice - lastOrderPrice; // 151 - 150 = 1
-      const b = a / newPrice * 100; // 0.66 % от 150
+      const a = priceForm - lastOrderPrice; // 151 - 150 = 1
+      const b = a / priceForm * 100; // 0.66 % от 150
       summForSell = Math.trunc(balanceTRX * b / 100); // 1195.8078 от баланса trx
 
-      variableHistory.D_TEST_1 = newPrice; 
+      variableHistory.D_TEST_1 = priceForm; 
       variableHistory.D_TEST_2 = lastOrderPrice;
-      variableHistory.D_TEST_3 = newPrice - lastOrderPrice;
+      variableHistory.D_TEST_3 = priceForm - lastOrderPrice;
       variableHistory.D_TEST_4 = a;
-      variableHistory.D_TEST_5 = newPrice;
-      variableHistory.D_TEST_6 = a / newPrice * 100;
+      variableHistory.D_TEST_5 = priceForm;
+      variableHistory.D_TEST_6 = a / priceForm * 100;
       // variableHistory.D_TEST_7 = btcToTrx + balanceTRX;
       variableHistory.D_TEST_8 = balanceTRX;
       variableHistory.D_TEST_9 = b;
@@ -201,14 +201,14 @@ app.listen(4002, () => {
     }
 
     if (side === 'buy') {
-      const a = lastOrderPrice - newPrice; // 151 - 150 = 1
+      const a = lastOrderPrice - priceForm; // 151 - 150 = 1
       const b = a / lastOrderPrice * 100; // 0.66 % от 150
       const c = balanceBTC * b / 100; // 0.001815750024 от баланса btc
-      summForSell = Math.trunc(c / newPrice);
+      summForSell = Math.trunc(c / priceForm);
 
       variableHistory.D_TEST_1 = lastOrderPrice; 
-      variableHistory.D_TEST_2 = newPrice;
-      variableHistory.D_TEST_3 = lastOrderPrice - newPrice;
+      variableHistory.D_TEST_2 = priceForm;
+      variableHistory.D_TEST_3 = lastOrderPrice - priceForm;
       variableHistory.D_TEST_4 = a;
       variableHistory.D_TEST_5 = lastOrderPrice;
       variableHistory.D_TEST_6 = a / lastOrderPrice * 100;
@@ -216,8 +216,8 @@ app.listen(4002, () => {
       variableHistory.D_TEST_8 = balanceBTC;
       variableHistory.D_TEST_9 = b;
       variableHistory.D_TEST_10 = balanceBTC * b / 100;
-      variableHistory.D_TEST_11 = c / newPrice;
-      variableHistory.D_TEST_12 = Math.trunc(c / newPrice);
+      variableHistory.D_TEST_11 = c / priceForm;
+      variableHistory.D_TEST_12 = Math.trunc(c / priceForm);
 //   variableHistory.D_TEST_13 = balanceTRX - halfOfTrx; 
 //   variableHistory.D_TEST_14 = summForSell;
     }

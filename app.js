@@ -51,7 +51,7 @@ app.listen(4002, () => {
     // fs.writeFileSync('history.json', JSON.stringify(collection))
     setInterval(() => {
       checkBalance();
-    }, 10000);
+    }, 60000);
   };
 
   startScript();
@@ -127,8 +127,8 @@ app.listen(4002, () => {
     const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
     const newPrice = lastPrices[0].price; // 0.12345678
 
-    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
-    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
+    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
+    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
     variableHistory.A_0_pairs = {...pairs};
     variableHistory.A_1_lastPrices = lastPrices;

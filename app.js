@@ -152,12 +152,12 @@ app.listen(4002, () => {
       return;
     }
 
-    variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
+    // variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
 
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
     variableHistory = {};
   };
 

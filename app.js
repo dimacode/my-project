@@ -30,7 +30,7 @@ app.listen(4002, () => {
   };
 
   let pairs = {
-    TRXBTC: {
+    BTCUSDT: {
       base: 'BTC',
       qoute: 'USDT',
       pair: 'BTCUSDT',

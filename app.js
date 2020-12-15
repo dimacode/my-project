@@ -53,11 +53,11 @@ app.listen(4002, () => {
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
       let seconds = new Date().getSeconds();
-      // if (hours == 0 && minutes == 0) {
+      if (hours == 0 && minutes == 0) {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
-      // }
-    }, 60000);
+      }
+    }, 30000);
     
   };
 
@@ -136,8 +136,8 @@ app.listen(4002, () => {
     const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
     const newPrice = lastPrices[0].price; // 0.12345678
 
-    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 1000);
-    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 1000);
+    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
+    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
     // variableHistory.initialPrice = currentPair.initialPrice;
     variableHistory.A_0_pairs = {...pairs};

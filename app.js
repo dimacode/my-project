@@ -48,6 +48,7 @@ app.listen(4002, () => {
   
 
   const startScript = () => {
+    variableHistory.startScript = true;
     setInterval(() => {
       let day = new Date().getDate();
       let hours = new Date().getHours();
@@ -64,6 +65,7 @@ app.listen(4002, () => {
   startScript();
 
   const checkTime = () => {
+    variableHistory.checkTime = true;
     // let hours = new Date().getHours();
     // let minutes = new Date().getMinutes();
     // console.log('START SCRIPT 1')
@@ -77,12 +79,12 @@ app.listen(4002, () => {
 
 
       getServerTime().then(time => {
-        // console.log('h / m', hours, ' : ', minutes);
-        const dayExc = new Date().getDate();
-        const hoursExc = new Date(time).getHours();
-        const minutesExc = new Date(time).getMinutes();
-        const secondsExc = new Date(time).getSeconds();
-        // console.log('hoursExc', hoursExc+':'+minutesExc);
+
+        // const dayExc = new Date().getDate();
+        // const hoursExc = new Date(time).getHours();
+        // const minutesExc = new Date(time).getMinutes();
+        // const secondsExc = new Date(time).getSeconds();
+
         // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
             variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;

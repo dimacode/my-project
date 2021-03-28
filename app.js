@@ -81,7 +81,15 @@ app.listen(4002, () => {
 
         // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
+
             variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
+
+
+            let data = fs.readFileSync('history.json');
+            let collection = JSON.parse(data);
+            collection.push(variableHistory);
+            fs.writeFileSync('history.json', JSON.stringify(collection))
+
             getPrice();
           });
         // }

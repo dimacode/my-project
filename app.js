@@ -260,11 +260,11 @@ app.listen(4002, () => {
       // variableHistory.A_10_minPricePositiv = minPricePositiv;
       // variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
-      variableHistory = {};
+      // let data = fs.readFileSync('history.json');
+      // let collection = JSON.parse(data);
+      // collection.push(variableHistory);
+      // fs.writeFileSync('history.json', JSON.stringify(collection))
+      // variableHistory = {};
     // }
   };
 
@@ -319,10 +319,11 @@ app.listen(4002, () => {
   //     // variableHistory.F_1_currentPair = {...pairs[symbol]};
   //     variableHistory.F_2_pairs = {...pairs};
 
-  //     let data = fs.readFileSync('history.json');
-  //     let collection = JSON.parse(data);
-  //     collection.push(variableHistory);
-  //     fs.writeFileSync('history.json', JSON.stringify(collection))
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection));
+      variableHistory = {};
   //     console.log('-------------------------------- ФИНИШ ---------------------------');
 
   //     history.push(variableHistory);

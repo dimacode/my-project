@@ -22,25 +22,25 @@ app.listen(4002, () => {
   let variableHistory = {};
 
   let currency = {
-    BTC: {
+    TRX: {
       balance: '',
     },
-    USDT: {
+    BTC: {
       balance: '',
     },
   };
 
   let pairs = {
-    BTCUSDT: {
-      base: 'BTC',
-      qoute: 'USDT',
-      pair: 'BTCUSDT',
+    TRXUSD: {
+      base: 'TRX',
+      qoute: 'BTC',
+      pair: 'TRXBTC',
       initialPrice: '',
       orderHistoryPrice: [],
       currentSide: '',
       precision: {
+        TRX: 6,
         BTC: 6,
-        USDT: 6,
       },
     },
   };
@@ -71,13 +71,6 @@ app.listen(4002, () => {
     // console.log('START SCRIPT 1')
     // if (hours === 0 && minutes === 0) {
 
-
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
-
-
       getServerTime().then(time => {
 
         // const dayExc = new Date().getDate();
@@ -97,6 +90,7 @@ app.listen(4002, () => {
 
   const loadBalances = () => 
     getAccountData(ACCESS_KEY, SECRET_KEY, {}).then(account=>{
+
       variableHistory.loadBalanse = true;
       let currencyKeys = Object.keys(currency);
       let newCurrency = {};
@@ -130,195 +124,200 @@ app.listen(4002, () => {
         console.log('INITIAL PRICE FINISH', pairs);
         isInitialPrice = false;
       };
-      console.log('variableHistory', variableHistory);
+      // console.log('variableHistory', variableHistory);
 
       // console.log('lastPrices', lastPrices[0].price)
-      // variableHistory.lastPrice = lastPrices;
+      variableHistory.getPrice = lastPrices;
+
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
 
       // checkPrice(lastPrices);
     });
   };
 
-  const checkPrice = (lastPrices) => {
-    // let i = 0;
-    // while (i < lastPrices.length) {
-    const symbol = lastPrices[0].symbol; // "TRXBTC"
-    const currentPair = pairs[symbol]; // TRXBTC {}
-    const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
-    const newPrice = lastPrices[0].price; // 0.12345678
+  // const checkPrice = (lastPrices) => {
+  //   // let i = 0;
+  //   // while (i < lastPrices.length) {
+  //   const symbol = lastPrices[0].symbol; // "TRXBTC"
+  //   const currentPair = pairs[symbol]; // TRXBTC {}
+  //   const lastOrderPrice = currentPair.orderHistoryPrice[currentPair.orderHistoryPrice.length - 1] || currentPair.initialPrice;
+  //   const newPrice = lastPrices[0].price; // 0.12345678
 
-    const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
-    const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
+  //   const minPricePositiv = Number(lastOrderPrice) + (lastOrderPrice / 100);
+  //   const minPriceNegativ = Number(lastOrderPrice) - (lastOrderPrice / 100);
 
-    // variableHistory.initialPrice = currentPair.initialPrice;
-    variableHistory.A_0_pairs = {...pairs};
-    variableHistory.A_1_lastPrices = lastPrices;
-    variableHistory.A_2_currentPair = {...currentPair};
-    variableHistory.A_3_lastOrderPrice = lastOrderPrice;
-    variableHistory.A_4_newPrice = newPrice;
+  //   // variableHistory.initialPrice = currentPair.initialPrice;
+  //   variableHistory.A_0_pairs = {...pairs};
+  //   variableHistory.A_1_lastPrices = lastPrices;
+  //   variableHistory.A_2_currentPair = {...currentPair};
+  //   variableHistory.A_3_lastOrderPrice = lastOrderPrice;
+  //   variableHistory.A_4_newPrice = newPrice;
 
-    variableHistory.A_5_minPricePositiv = minPricePositiv;
-    variableHistory.A_6_minPriceNegativ = minPriceNegativ;
+  //   variableHistory.A_5_minPricePositiv = minPricePositiv;
+  //   variableHistory.A_6_minPriceNegativ = minPriceNegativ;
     
-    const currentSide = currentPair.currentSide;
+  //   const currentSide = currentPair.currentSide;
 
-    if (newPrice >= minPricePositiv) {
-      // BUY
-      pairs[symbol].orderHistoryPrice.push(newPrice);
+  //   if (newPrice >= minPricePositiv) {
+  //     // BUY
+  //     pairs[symbol].orderHistoryPrice.push(newPrice);
 
-      // variableHistory.B_1_currentPairAfterPush = {...currentPair};
-      variableHistory.B_2_pairsAfterPush = {...pairs};
+  //     // variableHistory.B_1_currentPairAfterPush = {...currentPair};
+  //     variableHistory.B_2_pairsAfterPush = {...pairs};
 
-      if (currentSide !== "buy") {
-        pairs[symbol].currentSide = "buy";
+  //     if (currentSide !== "buy") {
+  //       pairs[symbol].currentSide = "buy";
         
-        variableHistory.C_1_newPrice = newPrice;
-        variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv;
-        variableHistory.C_3_currentSide = "buy";
-        variableHistory.C_4_minPricePositiv = minPricePositiv;
-        variableHistory.C_5_minPriceNegativ = minPriceNegativ;
+  //       variableHistory.C_1_newPrice = newPrice;
+  //       variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice >= minPricePositiv;
+  //       variableHistory.C_3_currentSide = "buy";
+  //       variableHistory.C_4_minPricePositiv = minPricePositiv;
+  //       variableHistory.C_5_minPriceNegativ = minPriceNegativ;
 
-        // variableHistory.C_6_currentPairAfterPush = {...currentPair};
-        variableHistory.C_7_pairsAfterPush = {...pairs};
+  //       // variableHistory.C_6_currentPairAfterPush = {...currentPair};
+  //       variableHistory.C_7_pairsAfterPush = {...pairs};
 
-        preparingOrder(symbol, 'buy', newPrice);
-        return;
-        // break;
-      } else {
+  //       preparingOrder(symbol, 'buy', newPrice);
+  //       return;
+  //       // break;
+  //     } else {
 
-        variableHistory.B_3_pushedNewMaxPrice = 'ADD NEW MAX PRICE';
+  //       variableHistory.B_3_pushedNewMaxPrice = 'ADD NEW MAX PRICE';
 
-        let data = fs.readFileSync('history.json');
-        let collection = JSON.parse(data);
-        collection.push(variableHistory);
-        fs.writeFileSync('history.json', JSON.stringify(collection))
-        variableHistory = {};
-      }
+  //       let data = fs.readFileSync('history.json');
+  //       let collection = JSON.parse(data);
+  //       collection.push(variableHistory);
+  //       fs.writeFileSync('history.json', JSON.stringify(collection))
+  //       variableHistory = {};
+  //     }
       
-    } else if (newPrice <= minPriceNegativ) {
-      // SELL
-      pairs[symbol].orderHistoryPrice.push(newPrice);
+  //   } else if (newPrice <= minPriceNegativ) {
+  //     // SELL
+  //     pairs[symbol].orderHistoryPrice.push(newPrice);
 
-      // variableHistory.B_1_currentPairAfterPush = {...currentPair};
-      variableHistory.B_2_pairsAfterPush = {...pairs};
+  //     // variableHistory.B_1_currentPairAfterPush = {...currentPair};
+  //     variableHistory.B_2_pairsAfterPush = {...pairs};
 
-      if (currentSide !== "sell") {
-        pairs[symbol].currentSide = 'sell';
+  //     if (currentSide !== "sell") {
+  //       pairs[symbol].currentSide = 'sell';
 
-        variableHistory.C_1_newPrice = newPrice;
-        variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice <= minPriceNegativ;
-        variableHistory.C_3_currentSide = "sell";
-        variableHistory.C_4_minPricePositiv = minPricePositiv;
-        variableHistory.C_5_minPriceNegativ = minPriceNegativ;
+  //       variableHistory.C_1_newPrice = newPrice;
+  //       variableHistory.C_2_ifNewPriceMoreMinPricePositiv = newPrice <= minPriceNegativ;
+  //       variableHistory.C_3_currentSide = "sell";
+  //       variableHistory.C_4_minPricePositiv = minPricePositiv;
+  //       variableHistory.C_5_minPriceNegativ = minPriceNegativ;
 
-        // variableHistory.C_6_currentPairAfterPush = {...currentPair};
-        variableHistory.C_7_pairsAfterPush = {...pairs};
+  //       // variableHistory.C_6_currentPairAfterPush = {...currentPair};
+  //       variableHistory.C_7_pairsAfterPush = {...pairs};
 
-        preparingOrder(symbol, 'sell', newPrice);
-        return;
+  //       preparingOrder(symbol, 'sell', newPrice);
+  //       return;
 
-      } else {
+  //     } else {
 
-        variableHistory.B_3_pushedNewMinPrice = 'ADD NEW MIN PRICE';
+  //       variableHistory.B_3_pushedNewMinPrice = 'ADD NEW MIN PRICE';
 
-        let data = fs.readFileSync('history.json');
-        let collection = JSON.parse(data);
-        collection.push(variableHistory);
-        fs.writeFileSync('history.json', JSON.stringify(collection))
-        variableHistory = {};
-      }
+  //       let data = fs.readFileSync('history.json');
+  //       let collection = JSON.parse(data);
+  //       collection.push(variableHistory);
+  //       fs.writeFileSync('history.json', JSON.stringify(collection))
+  //       variableHistory = {};
+  //     }
 
-    } else {
+  //   } else {
 
-      variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
-      variableHistory.A_8_currentSide = pairs[symbol].currentSide;
-      variableHistory.A_9_newPrice = newPrice;
-      variableHistory.A_10_minPricePositiv = minPricePositiv;
-      variableHistory.A_11_minPriceNegativ = minPriceNegativ;
+  //     variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
+  //     variableHistory.A_8_currentSide = pairs[symbol].currentSide;
+  //     variableHistory.A_9_newPrice = newPrice;
+  //     variableHistory.A_10_minPricePositiv = minPricePositiv;
+  //     variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
-      variableHistory = {};
-    }
+  //     let data = fs.readFileSync('history.json');
+  //     let collection = JSON.parse(data);
+  //     collection.push(variableHistory);
+  //     fs.writeFileSync('history.json', JSON.stringify(collection))
+  //     variableHistory = {};
+  //   }
 
-  };
+  // };
 
-  const preparingOrder = (symbol, side, newPrice) => {
+  // const preparingOrder = (symbol, side, newPrice) => {
 
-    const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
-    const precision = pairs[symbol].precision[whatCrypto]; // 8
-    const pair = pairs[symbol].pair; // TRXBTC
-    let balance = currency[whatCrypto].balance;
+  //   const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
+  //   const precision = pairs[symbol].precision[whatCrypto]; // 8
+  //   const pair = pairs[symbol].pair; // TRXBTC
+  //   let balance = currency[whatCrypto].balance;
     
-    variableHistory.D_1_whatCrypto = whatCrypto;
-    variableHistory.D_2_precision = precision;
-    variableHistory.D_3_pair = pair;
-    variableHistory.D_4_balance = balance;
+  //   variableHistory.D_1_whatCrypto = whatCrypto;
+  //   variableHistory.D_2_precision = precision;
+  //   variableHistory.D_3_pair = pair;
+  //   variableHistory.D_4_balance = balance;
 
-    if (side === 'buy') {
-      balance = balance / newPrice; // BTC convert to TRX
-      // console.log('ВТС конвертирован в TRX = ', balance);
-      variableHistory.D_5_usdtConverted = balance;
-    }
-    if (side === 'sell') {
-      // balance -= stableBalance; // TRX minus stable balance
-      // console.log('TRX = ', balance);
-      variableHistory.D_5_btcConverted = balance;
-    }
+  //   if (side === 'buy') {
+  //     balance = balance / newPrice; // BTC convert to TRX
+  //     // console.log('ВТС конвертирован в TRX = ', balance);
+  //     variableHistory.D_5_usdtConverted = balance;
+  //   }
+  //   if (side === 'sell') {
+  //     // balance -= stableBalance; // TRX minus stable balance
+  //     // console.log('TRX = ', balance);
+  //     variableHistory.D_5_btcConverted = balance;
+  //   }
 
-    // console.log('balance', balance);
-    console.log('============== 1 ОРДЕР ===============')
+  //   // console.log('balance', balance);
+  //   console.log('============== 1 ОРДЕР ===============')
 
-    const quantityWithCommision = balance - (balance / commision);
-    let quantityWithPrecision = quantityWithCommision.toFixed(precision);
+  //   const quantityWithCommision = balance - (balance / commision);
+  //   let quantityWithPrecision = quantityWithCommision.toFixed(precision);
 
-    // if (side === 'buy') {
-    //   quantityWithPrecision = quantityWithCommision.toFixed();
-    // }
+  //   // if (side === 'buy') {
+  //   //   quantityWithPrecision = quantityWithCommision.toFixed();
+  //   // }
 
-    // console.log('Баланс с комисией', quantityWithCommision)
-    // console.log('Сумма сделки обрезанна', quantityWithPrecision);
-    variableHistory.D_6_quantityWithCommision = quantityWithCommision;
-    variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
+  //   // console.log('Баланс с комисией', quantityWithCommision)
+  //   // console.log('Сумма сделки обрезанна', quantityWithPrecision);
+  //   variableHistory.D_6_quantityWithCommision = quantityWithCommision;
+  //   variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
-    const addLogToHistory = () => {
-      // variableHistory.F_1_currentPair = {...pairs[symbol]};
-      variableHistory.F_2_pairs = {...pairs};
+  //   const addLogToHistory = () => {
+  //     // variableHistory.F_1_currentPair = {...pairs[symbol]};
+  //     variableHistory.F_2_pairs = {...pairs};
 
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
-      console.log('-------------------------------- ФИНИШ ---------------------------');
+  //     let data = fs.readFileSync('history.json');
+  //     let collection = JSON.parse(data);
+  //     collection.push(variableHistory);
+  //     fs.writeFileSync('history.json', JSON.stringify(collection))
+  //     console.log('-------------------------------- ФИНИШ ---------------------------');
 
-      history.push(variableHistory);
-      variableHistory = {};
-    }
+  //     history.push(variableHistory);
+  //     variableHistory = {};
+  //   }
 
     
-    sendOrder(ACCESS_KEY, SECRET_KEY, {
-      symbol: pair, // TRXBTC
-      side: side, // sell
-      type: 'MARKET',
-      quantity: quantityWithPrecision,
-    })
-    .then(res => {
-      variableHistory.sendOrderThenRes = res;
-      addLogToHistory();
-      // loadBalances().then(() => {
-      //   variableHistory.sendOrderSUCCESS = true;
-      //   console.log('Обновляем балансы')
-      //   variableHistory.updateBalances = true;
-      //   console.log('Финиш баланс 1', currency[whatCrypto].balance);
-      //   variableHistory.balanceFinish = currency[whatCrypto].balance;
-      // });
-    })
-    .catch(err => {
-      variableHistory.sendOrderERROR = err;
-      addLogToHistory();
-    })
-  };
+  //   sendOrder(ACCESS_KEY, SECRET_KEY, {
+  //     symbol: pair, // TRXBTC
+  //     side: side, // sell
+  //     type: 'MARKET',
+  //     quantity: quantityWithPrecision,
+  //   })
+  //   .then(res => {
+  //     variableHistory.sendOrderThenRes = res;
+  //     addLogToHistory();
+  //     // loadBalances().then(() => {
+  //     //   variableHistory.sendOrderSUCCESS = true;
+  //     //   console.log('Обновляем балансы')
+  //     //   variableHistory.updateBalances = true;
+  //     //   console.log('Финиш баланс 1', currency[whatCrypto].balance);
+  //     //   variableHistory.balanceFinish = currency[whatCrypto].balance;
+  //     // });
+  //   })
+  //   .catch(err => {
+  //     variableHistory.sendOrderERROR = err;
+  //     addLogToHistory();
+  //   })
+  // };
   
 })

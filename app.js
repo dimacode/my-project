@@ -85,6 +85,10 @@ app.listen(4002, () => {
           });
         // }
       })
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
     // }
   };
 
@@ -129,13 +133,15 @@ app.listen(4002, () => {
       // console.log('lastPrices', lastPrices[0].price)
       variableHistory.getPrice = lastPrices;
 
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
+      
 
       // checkPrice(lastPrices);
     });
+
+    let data = fs.readFileSync('history.json');
+    let collection = JSON.parse(data);
+    collection.push(variableHistory);
+    fs.writeFileSync('history.json', JSON.stringify(collection))
   };
 
   // const checkPrice = (lastPrices) => {

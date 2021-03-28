@@ -120,6 +120,7 @@ app.listen(4002, () => {
         console.log('INITIAL PRICE FINISH', pairs);
         isInitialPrice = false;
       };
+      console.log('variableHistory', variableHistory);
 
       // console.log('lastPrices', lastPrices[0].price)
       // variableHistory.lastPrice = lastPrices;

@@ -72,7 +72,8 @@ app.listen(4002, () => {
     // if (hours === 0 && minutes === 0) {
 
       getServerTime().then(time => {
-
+        variableHistory.getServerTime = true;
+        
         // const dayExc = new Date().getDate();
         // const hoursExc = new Date(time).getHours();
         // const minutesExc = new Date(time).getMinutes();
@@ -85,10 +86,10 @@ app.listen(4002, () => {
           });
         // }
       })
-      let data = fs.readFileSync('history.json');
-      let collection = JSON.parse(data);
-      collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection))
+      // let data = fs.readFileSync('history.json');
+      // let collection = JSON.parse(data);
+      // collection.push(variableHistory);
+      // fs.writeFileSync('history.json', JSON.stringify(collection))
     // }
   };
 

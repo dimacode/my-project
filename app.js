@@ -47,7 +47,7 @@ app.listen(4002, () => {
   
 
   const startScript = () => {
-
+    console.log('OHOOOOOOOOOOOOOOOOOOOOOOOO');
     setInterval(() => {
       let day = new Date().getDate();
       let hours = new Date().getHours();
@@ -124,7 +124,7 @@ app.listen(4002, () => {
       // console.log('lastPrices', lastPrices[0].price)
       // variableHistory.lastPrice = lastPrices;
 
-      checkPrice(lastPrices);
+      // checkPrice(lastPrices);
     });
   };
 

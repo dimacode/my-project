@@ -64,6 +64,30 @@ app.listen(4002, () => {
 
   startScript();
 
+  const loadBalances = () => 
+    getAccountData(ACCESS_KEY, SECRET_KEY, {}).then(account=>{
+
+      variableHistory.loadBalanse = true;
+      let currencyKeys = Object.keys(currency);
+      let newCurrency = {};
+      account.forEach(element => {
+        if (currencyKeys.includes(element.asset)) {
+          let { asset, free } = element;
+          newCurrency = {
+            ...newCurrency,
+            [asset]: {
+              balance: free,
+            }
+          };
+        }
+      });
+      currency = {...newCurrency};
+      variableHistory.currency = currency;
+    })
+    .catch(err => {
+      variableHistory.loadBalancesFAILS = err;
+    });
+
   const checkTime = () => {
     variableHistory.checkTime = true;
     // let hours = new Date().getHours();
@@ -74,10 +98,10 @@ app.listen(4002, () => {
       getServerTime().then(time => {
         variableHistory.getServerTime = true;
         
-        // const dayExc = new Date().getDate();
-        // const hoursExc = new Date(time).getHours();
-        // const minutesExc = new Date(time).getMinutes();
-        // const secondsExc = new Date(time).getSeconds();
+        const dayExc = new Date().getDate();
+        const hoursExc = new Date(time).getHours();
+        const minutesExc = new Date(time).getMinutes();
+        const secondsExc = new Date(time).getSeconds();
 
         // if (hoursExc === 0 && minutesExc === 0) {
           loadBalances().then(() => {
@@ -101,29 +125,7 @@ app.listen(4002, () => {
     // }
   };
 
-  const loadBalances = () => 
-    getAccountData(ACCESS_KEY, SECRET_KEY, {}).then(account=>{
 
-      variableHistory.loadBalanse = true;
-      let currencyKeys = Object.keys(currency);
-      let newCurrency = {};
-      account.forEach(element => {
-        if (currencyKeys.includes(element.asset)) {
-          let { asset, free } = element;
-          newCurrency = {
-            ...newCurrency,
-            [asset]: {
-              balance: free,
-            }
-          };
-        }
-      });
-      currency = {...newCurrency};
-      variableHistory.currency = currency;
-    })
-    .catch(err => {
-      variableHistory.loadBalancesFAILS = err;
-    })
 
   const getPrice = () => {
     const allPairs = Object.keys(pairs);

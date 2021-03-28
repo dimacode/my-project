@@ -39,8 +39,8 @@ app.listen(4002, () => {
       orderHistoryPrice: [],
       currentSide: '',
       precision: {
-        TRX: 6,
-        BTC: 6,
+        TRX: 8,
+        BTC: 8,
       },
     },
   };
@@ -256,9 +256,9 @@ app.listen(4002, () => {
     // if (newPrice < minPricePositiv && newPrice > minPriceNegativ) {
       variableHistory.A_7_newPriseCheckFail = 'Not BUY not SELL';
       // variableHistory.A_8_currentSide = pairs[symbol].currentSide;
-      variableHistory.A_9_newPrice = newPrice;
-      variableHistory.A_10_minPricePositiv = minPricePositiv;
-      variableHistory.A_11_minPriceNegativ = minPriceNegativ;
+      // variableHistory.A_9_newPrice = newPrice;
+      // variableHistory.A_10_minPricePositiv = minPricePositiv;
+      // variableHistory.A_11_minPriceNegativ = minPriceNegativ;
 
       let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
@@ -270,47 +270,50 @@ app.listen(4002, () => {
 
   const preparingOrder = (symbol, side, newPrice) => {
 
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
-    variableHistory = {};
+    const TRX = pairs[symbol].base;
+    const BTC = pairs[symbol].qoute;
 
-  //   const whatCrypto = side === 'sell' ? pairs[symbol].base : pairs[symbol].qoute; // TRX or BTC
-  //   const precision = pairs[symbol].precision[whatCrypto]; // 8
-  //   const pair = pairs[symbol].pair; // TRXBTC
-  //   let balance = currency[whatCrypto].balance;
+    const whatCrypto = side === 'sell' ? TRX : BTC; // TRX or BTC
+    // const precision = pairs[symbol].precision[whatCrypto]; // 8
+    // const pair = pairs[symbol].pair; // TRXBTC
+
+    let balance = currency[whatCrypto].balance;
+    let quantity = 0;
     
-  //   variableHistory.D_1_whatCrypto = whatCrypto;
-  //   variableHistory.D_2_precision = precision;
-  //   variableHistory.D_3_pair = pair;
-  //   variableHistory.D_4_balance = balance;
+    variableHistory.D_0_side = side;
+    variableHistory.D_1_whatCrypto = whatCrypto;
 
-  //   if (side === 'buy') {
-  //     balance = balance / newPrice; // BTC convert to TRX
+    if (side === 'buy') {
+      balance = balance / newPrice; // BTC convert to TRX
+      quantity = 3 * balance / 100;
   //     // console.log('ВТС конвертирован в TRX = ', balance);
-  //     variableHistory.D_5_usdtConverted = balance;
-  //   }
-  //   if (side === 'sell') {
-  //     // balance -= stableBalance; // TRX minus stable balance
-  //     // console.log('TRX = ', balance);
-  //     variableHistory.D_5_btcConverted = balance;
-  //   }
+      variableHistory.D_2_sideBUY = true;
+    }
+    if (side === 'sell') {
+      // balance -= stableBalance; // TRX minus stable balance
+      quantity = 3 * balance / 100;
+
+      variableHistory.D_2_sideSELL = true;
+    }
+    
+    variableHistory.D_5_balance = balance;
+    variableHistory.D_5_quantity = quantity;
 
   //   // console.log('balance', balance);
   //   console.log('============== 1 ОРДЕР ===============')
 
-  //   const quantityWithCommision = balance - (balance / commision);
-  //   let quantityWithPrecision = quantityWithCommision.toFixed(precision);
+    const quantityWithCommision = quantity - (quantity / commision);
+    // let quantityWithPrecision = quantityWithCommision.toFixed(precision);
+    const quantityWithPrecision = quantityWithCommision.toFixed();
 
-  //   // if (side === 'buy') {
-  //   //   quantityWithPrecision = quantityWithCommision.toFixed();
-  //   // }
+    // if (side === 'buy') {
+    //   quantityWithPrecision = quantityWithCommision.toFixed();
+    // }
 
   //   // console.log('Баланс с комисией', quantityWithCommision)
   //   // console.log('Сумма сделки обрезанна', quantityWithPrecision);
-  //   variableHistory.D_6_quantityWithCommision = quantityWithCommision;
-  //   variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
+    variableHistory.D_6_quantityWithCommision = quantityWithCommision;
+    variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
   //   const addLogToHistory = () => {
   //     // variableHistory.F_1_currentPair = {...pairs[symbol]};

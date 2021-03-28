@@ -31,7 +31,7 @@ app.listen(4002, () => {
   };
 
   let pairs = {
-    TRXUSD: {
+    TRXBTC: {
       base: 'TRX',
       qoute: 'BTC',
       pair: 'TRXBTC',
@@ -64,6 +64,43 @@ app.listen(4002, () => {
 
   startScript();
 
+  const checkTime = () => {
+    variableHistory.checkTime = true;
+    // let hours = new Date().getHours();
+    // let minutes = new Date().getMinutes();
+    // console.log('START SCRIPT 1')
+    // if (hours === 0 && minutes === 0) {
+
+      getServerTime().then(time => {
+        variableHistory.getServerTime = true;
+        
+        const dayExc = new Date().getDate();
+        const hoursExc = new Date(time).getHours();
+        const minutesExc = new Date(time).getMinutes();
+        const secondsExc = new Date(time).getSeconds();
+
+        // if (hoursExc === 0 && minutesExc === 0) {
+          loadBalances().then(() => {
+
+            variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
+
+
+            // let data = fs.readFileSync('history.json');
+            // let collection = JSON.parse(data);
+            // collection.push(variableHistory);
+            // fs.writeFileSync('history.json', JSON.stringify(collection))
+
+            getPrice();
+          });
+        // }
+      })
+      // let data = fs.readFileSync('history.json');
+      // let collection = JSON.parse(data);
+      // collection.push(variableHistory);
+      // fs.writeFileSync('history.json', JSON.stringify(collection))
+    // }
+  };
+
   const loadBalances = () => 
     getAccountData(ACCESS_KEY, SECRET_KEY, {}).then(account=>{
 
@@ -87,45 +124,6 @@ app.listen(4002, () => {
     .catch(err => {
       variableHistory.loadBalancesFAILS = err;
     });
-
-  const checkTime = () => {
-    variableHistory.checkTime = true;
-    // let hours = new Date().getHours();
-    // let minutes = new Date().getMinutes();
-    // console.log('START SCRIPT 1')
-    // if (hours === 0 && minutes === 0) {
-
-      getServerTime().then(time => {
-        variableHistory.getServerTime = true;
-        
-        const dayExc = new Date().getDate();
-        const hoursExc = new Date(time).getHours();
-        const minutesExc = new Date(time).getMinutes();
-        const secondsExc = new Date(time).getSeconds();
-
-        // if (hoursExc === 0 && minutesExc === 0) {
-          loadBalances().then(() => {
-
-            variableHistory.startTime = dayExc+':'+hoursExc +':'+minutesExc+':'+secondsExc;
-
-
-            let data = fs.readFileSync('history.json');
-            let collection = JSON.parse(data);
-            collection.push(variableHistory);
-            fs.writeFileSync('history.json', JSON.stringify(collection))
-
-            getPrice();
-          });
-        // }
-      })
-      // let data = fs.readFileSync('history.json');
-      // let collection = JSON.parse(data);
-      // collection.push(variableHistory);
-      // fs.writeFileSync('history.json', JSON.stringify(collection))
-    // }
-  };
-
-
 
   const getPrice = () => {
     const allPairs = Object.keys(pairs);
@@ -156,10 +154,10 @@ app.listen(4002, () => {
       // checkPrice(lastPrices);
     });
 
-    let data = fs.readFileSync('history.json');
-    let collection = JSON.parse(data);
-    collection.push(variableHistory);
-    fs.writeFileSync('history.json', JSON.stringify(collection))
+    // let data = fs.readFileSync('history.json');
+    // let collection = JSON.parse(data);
+    // collection.push(variableHistory);
+    // fs.writeFileSync('history.json', JSON.stringify(collection))
   };
 
   // const checkPrice = (lastPrices) => {

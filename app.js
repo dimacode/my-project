@@ -118,7 +118,9 @@ app.listen(4002, () => {
 
   const getPrice = () => {
     const allPairs = Object.keys(pairs);
+    variableHistory.getPrice = true;
     getLatestPrice(allPairs).then(lastPrices => {
+      variableHistory.getLatestPriceReceived = true;
       // Load first prices
       if (isInitialPrice) {
         console.log('INITIAL PRICE', pairs);
@@ -131,7 +133,12 @@ app.listen(4002, () => {
       // console.log('variableHistory', variableHistory);
 
       // console.log('lastPrices', lastPrices[0].price)
-      variableHistory.getPrice = lastPrices;
+      variableHistory.lastPrices = lastPrices;
+
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
 
       
 

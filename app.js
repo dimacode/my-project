@@ -6,6 +6,7 @@ require('dotenv').config();
 const fs = require('fs');
 
 app.get('/123', (req, res) => {
+  
   let rawdata = fs.readFileSync('history.json'); 
   let collection = JSON.parse(rawdata); 
   res.json(collection)
@@ -47,17 +48,16 @@ app.listen(4002, () => {
   
 
   const startScript = () => {
-    console.log('OHOOOOOOOOOOOOOOOOOOOOOOOO');
     setInterval(() => {
       let day = new Date().getDate();
       let hours = new Date().getHours();
       let minutes = new Date().getMinutes();
       let seconds = new Date().getSeconds();
-      if (hours == 0 && minutes == 0) {
+      // if (hours == 0 && minutes == 0) {
         variableHistory.localTime = day+':'+hours+':'+minutes+':'+seconds;
         checkTime();
-      }
-    }, 30000);
+      // }
+    }, 5000);
     
   };
 
@@ -68,6 +68,14 @@ app.listen(4002, () => {
     // let minutes = new Date().getMinutes();
     // console.log('START SCRIPT 1')
     // if (hours === 0 && minutes === 0) {
+
+
+      let data = fs.readFileSync('history.json');
+      let collection = JSON.parse(data);
+      collection.push(variableHistory);
+      fs.writeFileSync('history.json', JSON.stringify(collection))
+
+
       getServerTime().then(time => {
         // console.log('h / m', hours, ' : ', minutes);
         const dayExc = new Date().getDate();

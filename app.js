@@ -14,11 +14,12 @@ app.get('/123', (req, res) => {
 app.listen(4002, () => {
   const ACCESS_KEY = process.env.ACCESS_KEY;
   const SECRET_KEY = process.env.SECRET_KEY;
-  const stableBalance = 150000;
+  // const stableBalance = 150000;
   const commision = 1000; // 0.01%
   let isInitialPrice = true;
-  let history = [];
+  // let history = [];
   let variableHistory = {};
+  const percent = 4;
 
   let currency = {
     TRX: {
@@ -271,16 +272,18 @@ app.listen(4002, () => {
 
     const TRX = pairs[symbol].base;
     const BTC = pairs[symbol].qoute;
+    const pair = pairs[symbol].pair; // TRXBTC
 
     const whatCrypto = side === 'sell' ? TRX : BTC; // TRX or BTC
     // const precision = pairs[symbol].precision[whatCrypto]; // 8
-    // const pair = pairs[symbol].pair; // TRXBTC
 
     let balance = currency[whatCrypto].balance;
     let quantity = 0;
-    
+
+    variableHistory.D_0_whatCrypto = whatCrypto;
     variableHistory.D_0_side = side;
-    variableHistory.D_1_whatCrypto = whatCrypto;
+    variableHistory.D_1_TRX = currency[TRX].balance;
+    variableHistory.D_1_BTC = currency[BTC].balance;
 
     if (side === 'buy') {
       balance = balance / newPrice; // BTC convert to TRX
@@ -295,7 +298,6 @@ app.listen(4002, () => {
       variableHistory.D_2_sideSELL = true;
     }
     
-    variableHistory.D_5_balance = balance;
     variableHistory.D_5_quantity = quantity;
 
   //   // console.log('balance', balance);
@@ -314,43 +316,43 @@ app.listen(4002, () => {
     variableHistory.D_6_quantityWithCommision = quantityWithCommision;
     variableHistory.D_7_quantityWithPrecision = quantityWithPrecision;
 
-  //   const addLogToHistory = () => {
-  //     // variableHistory.F_1_currentPair = {...pairs[symbol]};
-  //     variableHistory.F_2_pairs = {...pairs};
+    const addLogToHistory = () => {
+      // variableHistory.F_1_currentPair = {...pairs[symbol]};
+      // variableHistory.F_2_pairs = {...pairs};
 
       let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
       collection.push(variableHistory);
       fs.writeFileSync('history.json', JSON.stringify(collection));
-      variableHistory = {};
-  //     console.log('-------------------------------- ФИНИШ ---------------------------');
+      // variableHistory = {};
+      // console.log('-------------------------------- ФИНИШ ---------------------------');
 
-  //     history.push(variableHistory);
-  //     variableHistory = {};
-  //   }
+      history.push(variableHistory);
+      variableHistory = {};
+    }
 
     
-  //   sendOrder(ACCESS_KEY, SECRET_KEY, {
-  //     symbol: pair, // TRXBTC
-  //     side: side, // sell
-  //     type: 'MARKET',
-  //     quantity: quantityWithPrecision,
-  //   })
-  //   .then(res => {
-  //     variableHistory.sendOrderThenRes = res;
-  //     addLogToHistory();
-  //     // loadBalances().then(() => {
-  //     //   variableHistory.sendOrderSUCCESS = true;
-  //     //   console.log('Обновляем балансы')
-  //     //   variableHistory.updateBalances = true;
-  //     //   console.log('Финиш баланс 1', currency[whatCrypto].balance);
-  //     //   variableHistory.balanceFinish = currency[whatCrypto].balance;
-  //     // });
-  //   })
-  //   .catch(err => {
-  //     variableHistory.sendOrderERROR = err;
-  //     addLogToHistory();
-  //   })
+    sendOrder(ACCESS_KEY, SECRET_KEY, {
+      symbol: pair, // TRXBTC
+      side: side, // sell
+      type: 'MARKET',
+      quantity: quantityWithPrecision,
+    })
+    .then(res => {
+      variableHistory.sendOrderThenRes = res;
+      addLogToHistory();
+      // loadBalances().then(() => {
+      //   variableHistory.sendOrderSUCCESS = true;
+      //   console.log('Обновляем балансы')
+      //   variableHistory.updateBalances = true;
+      //   console.log('Финиш баланс 1', currency[whatCrypto].balance);
+      //   variableHistory.balanceFinish = currency[whatCrypto].balance;
+      // });
+    })
+    .catch(err => {
+      variableHistory.sendOrderERROR = err;
+      addLogToHistory();
+    })
   };
   
 })

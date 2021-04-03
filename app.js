@@ -318,16 +318,15 @@ app.listen(4002, () => {
 
     const addLogToHistory = () => {
       // variableHistory.F_1_currentPair = {...pairs[symbol]};
-      // variableHistory.F_2_pairs = {...pairs};
+      variableHistory.F_2_pairs = {...pairs};
 
       let data = fs.readFileSync('history.json');
       let collection = JSON.parse(data);
       collection.push(variableHistory);
-      fs.writeFileSync('history.json', JSON.stringify(collection));
-      // variableHistory = {};
+      fs.writeFileSync('history.json', JSON.stringify(collection))
       // console.log('-------------------------------- ФИНИШ ---------------------------');
 
-      history.push(variableHistory);
+      // history.push(variableHistory);
       variableHistory = {};
     }
 

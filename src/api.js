@@ -103,7 +103,12 @@ const sendOrder = (apiKey, apiSecret, data) => {
         "X-MBX-APIKEY": apiKey,
       },
     })
-    .then(x=>x.data)
+    .then(x=>{
+      return {
+        data: x.data,
+        url: url,
+      }
+    })
 };
 
 // sendOrder(access_key, secret_key, {
